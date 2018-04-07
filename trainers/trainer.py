@@ -1,6 +1,7 @@
-from torch.autograd import Variable
 import torch.nn.functional as F
-from utils import AverageMeter, AccuracyMeter
+from torch.autograd import Variable
+
+from utils import AccuracyMeter, AverageMeter, MovingAverageMeter
 
 
 class Trainer(object):
@@ -15,7 +16,7 @@ class Trainer(object):
     def train(self, epoch):
         self.model.train()
 
-        train_loss = AverageMeter()
+        train_loss = MovingAverageMeter()
         train_acc = AccuracyMeter()
 
         for i, (x, y) in enumerate(self.train_loader):
@@ -33,7 +34,7 @@ class Trainer(object):
             loss.backward()
             self.optimizer.step()
 
-            train_loss.update(float(loss.data), x.size(0))
+            train_loss.update(float(loss.data))
 
             y_pred = output.data.max(dim=1)[1]
             correct = int(y_pred.eq(y.data).cpu().sum())

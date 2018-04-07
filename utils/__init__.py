@@ -1,1 +1,1 @@
-from .meters import AverageMeter, AccuracyMeter
+from .meters import AverageMeter, AccuracyMeter, MovingAverageMeter
