@@ -1,7 +1,7 @@
 import argparse
 
 import torch
-from torch import optim
+from torch import nn, optim
 
 from datasets import mnist_loader
 from models import Net
@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--root', type=str, default='data')
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--epochs', type=int, default=40)
+    parser.add_argument('--parallel', action='store_true')
     args = parser.parse_args()
 
     args.cuda = torch.cuda.is_available() and not args.no_cuda
@@ -22,6 +23,8 @@ def main():
 
     model = Net()
     if args.cuda:
+        if args.parallel:
+            model = nn.DataParallel(model)
         model.cuda()
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
