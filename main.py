@@ -4,31 +4,31 @@ import torch
 from torch import nn, optim
 
 from datasets import mnist_loader
-from models import Net
+from models import CIFAR10Net
 from trainers import Trainer
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-cuda', action='store_true')
-    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--root', type=str, default='data')
     parser.add_argument('--batch-size', type=int, default=128)
-    parser.add_argument('--epochs', type=int, default=40)
+    parser.add_argument('--epochs', type=int, default=350)
     parser.add_argument('--parallel', action='store_true')
     args = parser.parse_args()
 
     args.cuda = torch.cuda.is_available() and not args.no_cuda
     print(args)
 
-    model = Net()
+    model = CIFAR10Net()
     if args.cuda:
         if args.parallel:
             model = nn.DataParallel(model)
         model.cuda()
 
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
 
     train_loader, valid_loader = mnist_loader(args.root, args.batch_size)
 

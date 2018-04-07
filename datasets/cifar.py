@@ -14,6 +14,14 @@ def cifar10_loader(root,
         valid_batch_size = train_batch_size
 
     transform = transforms.Compose([
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(),
+        transforms.RandomRotation(25),
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))
+    ])
+
+    valid_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))
     ])
@@ -28,7 +36,7 @@ def cifar10_loader(root,
 
     valid_loader = data.DataLoader(datasets.CIFAR10(root,
                                                     train=False,
-                                                    transform=transform,
+                                                    transform=valid_transform,
                                                     download=True),
                                    batch_size=valid_batch_size,
                                    shuffle=valid_shuffle,
