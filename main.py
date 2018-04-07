@@ -3,7 +3,7 @@ import argparse
 import torch
 from torch import nn, optim
 
-from datasets import mnist_loader
+from datasets import cifar10_loader
 from models import CIFAR10Net
 from trainers import Trainer
 
@@ -30,7 +30,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
 
-    train_loader, valid_loader = mnist_loader(args.root, args.batch_size)
+    train_loader, valid_loader = cifar10_loader(args.root, args.batch_size)
 
     trainer = Trainer(model, optimizer, train_loader, valid_loader)
 
