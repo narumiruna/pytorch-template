@@ -4,7 +4,7 @@ import torch
 from torch import optim
 
 from datasets import mnist_loader
-from models import Net
+from models import Net, KaggleNet
 from trainers import Trainer
 
 
@@ -20,7 +20,7 @@ def main():
     args.cuda = torch.cuda.is_available() and not args.no_cuda
     print(args)
 
-    model = Net()
+    model = KaggleNet()
     if args.cuda:
         model.cuda()
 
