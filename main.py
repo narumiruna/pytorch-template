@@ -11,10 +11,10 @@ from trainers import Trainer
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-cuda', action='store_true')
-    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--lr', type=float, default=1e-2)
     parser.add_argument('--root', type=str, default='data')
     parser.add_argument('--batch-size', type=int, default=128)
-    parser.add_argument('--epochs', type=int, default=40)
+    parser.add_argument('--epochs', type=int, default=1000)
     args = parser.parse_args()
 
     args.cuda = torch.cuda.is_available() and not args.no_cuda
@@ -24,8 +24,12 @@ def main():
     if args.cuda:
         model.cuda()
 
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
+    optimizer = optim.SGD(model.parameters(),
+                          lr=args.lr,
+                          momentum=0.9,
+                          weight_decay=1e-4)
+
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
 
     train_loader, valid_loader = mnist_loader(args.root, args.batch_size)
 
