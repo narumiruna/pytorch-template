@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 from torch import nn, optim
@@ -17,6 +18,7 @@ def main():
     parser.add_argument('--parallel', action='store_true')
     parser.add_argument('--root', type=str, default='data')
     parser.add_argument('--weight-decay', type=float, default=1e-4)
+    parser.add_argument('--save-dir', type=str, default='cifar')
     args = parser.parse_args()
 
     args.cuda = torch.cuda.is_available() and not args.no_cuda
@@ -45,6 +47,9 @@ def main():
         print('epoch: {}/{},'.format(epoch + 1, args.epochs),
               'train loss: {:.4f}, train acc: {:.2f}%,'.format(train_loss, train_acc * 100),
               'valid loss: {:.4f}, valid acc: {:.2f}%'.format(valid_loss, valid_acc * 100))
+
+        os.makedirs(args.save_dir, exist_ok=True)
+        torch.save(model.state_dict(), os.path.join(args.save_dir, 'model_{:04d}.pt'.format(epoch + 1)))
 
 
 if __name__ == '__main__':
