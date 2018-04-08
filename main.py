@@ -22,6 +22,7 @@ def main():
     print(args)
 
     model = CIFAR10Net()
+    print(model)
     if args.cuda:
         if args.parallel:
             model = nn.DataParallel(model)
