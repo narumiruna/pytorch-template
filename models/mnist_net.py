@@ -1,9 +1,9 @@
 from torch import nn
 
 
-class Net(nn.Module):
+class MNISTNet(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(MNISTNet, self).__init__()
 
         self.conv = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=5, stride=2, padding=2),

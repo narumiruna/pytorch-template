@@ -5,7 +5,7 @@ from utils import AccuracyMeter, AverageMeter, MovingAverageMeter
 
 
 class Trainer(object):
-    def __init__(self, model, optimizer, train_loader, valid_loader, use_cuda=True):
+    def __init__(self, model, optimizer, train_loader, valid_loader, use_cuda=False):
         self.model = model
         self.optimizer = optimizer
         self.train_loader = train_loader

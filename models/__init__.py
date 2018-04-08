@@ -1,2 +1,2 @@
-from .network import Net
-from .cifar import CIFAR10Net
+from .mnist_net import MNISTNet
+from .cifar_net import CIFAR10Net
