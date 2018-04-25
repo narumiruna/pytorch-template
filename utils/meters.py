@@ -32,7 +32,7 @@ class AccuracyMeter(Meter):
         self.count = 0
         self.accuracy = None
 
-    def update(self, correct, count):
+    def update(self, correct, number):
         self.correct += correct
-        self.count += count
+        self.count += number
         self.accuracy = self.correct / self.count
