@@ -13,7 +13,7 @@ class Trainer(object):
 
         self.use_cuda = use_cuda
 
-    def train(self, epoch):
+    def train(self):
         self.model.train()
 
         train_loss = MovingAverageMeter()
