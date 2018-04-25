@@ -44,7 +44,7 @@ def main():
     for epoch in range(config['epochs']):
         scheduler.step()
 
-        train_loss, train_acc = trainer.train(epoch)
+        train_loss, train_acc = trainer.train()
         valid_loss, valid_acc = trainer.validate()
 
         print('epoch: {}/{},'.format(epoch + 1, config['epochs']),
