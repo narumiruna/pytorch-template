@@ -6,7 +6,7 @@
         "train_batch_size": 128
     },
     "adam": {
-        "lr": 1e-4
+        "lr": 1e-3
     },
     "steplr": {
         "step_size": 20,
