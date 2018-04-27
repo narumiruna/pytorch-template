@@ -1,3 +1,4 @@
+import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
 
@@ -5,13 +6,13 @@ from utils import AccuracyMeter, AverageMeter, MovingAverageMeter
 
 
 class Trainer(object):
-    def __init__(self, model, optimizer, train_loader, valid_loader, use_cuda=False):
+    def __init__(self, model, optimizer, train_loader, valid_loader, device):
         self.model = model
         self.optimizer = optimizer
         self.train_loader = train_loader
         self.valid_loader = valid_loader
 
-        self.use_cuda = use_cuda
+        self.device = device
 
     def train(self):
         self.model.train()
@@ -20,12 +21,8 @@ class Trainer(object):
         train_acc = AccuracyMeter()
 
         for i, (x, y) in enumerate(self.train_loader):
-            x = Variable(x)
-            y = Variable(y)
-
-            if self.use_cuda:
-                x = x.cuda()
-                y = y.cuda()
+            x = x.to(self.device)
+            y = y.to(self.device)
 
             output = self.model(x)
             loss = F.cross_entropy(output, y)
@@ -48,21 +45,18 @@ class Trainer(object):
         valid_loss = AverageMeter()
         valid_acc = AccuracyMeter()
 
-        for i, (x, y) in enumerate(self.valid_loader):
-            x = Variable(x, volatile=True)
-            y = Variable(y)
+        with torch.no_grad():
+            for i, (x, y) in enumerate(self.valid_loader):
+                x = x.to(self.device)
+                y = y.to(self.device)
 
-            if self.use_cuda:
-                x = x.cuda()
-                y = y.cuda()
+                output = self.model(x)
+                loss = F.cross_entropy(output, y)
 
-            output = self.model(x)
-            loss = F.cross_entropy(output, y)
+                valid_loss.update(float(loss.data), x.size(0))
 
-            valid_loss.update(float(loss.data), x.size(0))
-
-            y_pred = output.data.max(dim=1)[1]
-            correct = int(y_pred.eq(y.data).cpu().sum())
-            valid_acc.update(correct, x.size(0))
+                y_pred = output.data.max(dim=1)[1]
+                correct = int(y_pred.eq(y.data).cpu().sum())
+                valid_acc.update(correct, x.size(0))
 
         return valid_loss.average, valid_acc.accuracy

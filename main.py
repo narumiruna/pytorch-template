@@ -20,20 +20,21 @@ def main():
     args.cuda = torch.cuda.is_available() and not args.no_cuda
     print(args)
 
+    device = torch.device('cuda' if args.cuda else 'cpu')
+
     config = load_json(args.config)
 
     model = MNISTNet()
-    if args.cuda:
-        if args.parallel:
-            model = nn.DataParallel(model)
-        model.cuda()
+    if args.parallel:
+        model = nn.DataParallel(model)
+    model.to(device)
 
     optimizer = optim.Adam(model.parameters(), **config['adam'])
     scheduler = optim.lr_scheduler.StepLR(optimizer, **config['steplr'])
 
     train_loader, valid_loader = mnist_loader(**config['dataset'])
 
-    trainer = Trainer(model, optimizer, train_loader, valid_loader, use_cuda=args.cuda)
+    trainer = Trainer(model, optimizer, train_loader, valid_loader, device)
 
     output_dir = os.path.join(config['output_dir'], datetime.now().strftime('%Y%m%d_%H%M%S'))
     os.makedirs(output_dir, exist_ok=True)
