@@ -1,1 +1,1 @@
-from .mnist_net import MNISTNet
+from .net import Net

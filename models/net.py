@@ -1,11 +1,11 @@
 from torch import nn
 
 
-class MNISTNet(nn.Module):
+class Net(nn.Module):
     def __init__(self):
-        super(MNISTNet, self).__init__()
+        super(Net, self).__init__()
 
-        self.conv = nn.Sequential(
+        self.features = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=5, stride=2),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(32),
@@ -26,7 +26,7 @@ class MNISTNet(nn.Module):
         )
 
     def forward(self, x):
-        out = self.conv(x)
+        out = self.features(x)
         out = out.view(x.size(0), -1)
         out = self.fc(out)
         return out
