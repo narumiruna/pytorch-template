@@ -6,7 +6,7 @@ import torch
 from torch import nn, optim
 
 from datasets import mnist_loader
-from models import Net
+from networks import Net
 from trainers import Trainer
 from utils import load_json, save_json
 
