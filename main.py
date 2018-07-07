@@ -5,7 +5,7 @@ from datetime import datetime
 import torch
 from torch import nn, optim
 
-import datasets
+import loaders
 import networks
 import trainers
 import utils
@@ -32,7 +32,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), **config['adam'])
     scheduler = optim.lr_scheduler.StepLR(optimizer, **config['steplr'])
 
-    train_loader, valid_loader = datasets.mnist_loader(**config['dataset'])
+    train_loader, valid_loader = loaders.mnist_loader(**config['dataset'])
 
     trainer = trainers.Trainer(model, optimizer, train_loader, valid_loader,
                                device)
