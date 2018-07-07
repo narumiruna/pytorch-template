@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-from utils import AccuracyMeter, AverageMeter, MovingAverageMeter
+import utils
 
 
 class Trainer(object):
@@ -17,8 +17,8 @@ class Trainer(object):
     def train(self):
         self.model.train()
 
-        train_loss = MovingAverageMeter()
-        train_acc = AccuracyMeter()
+        train_loss = utils.MovingAverageMeter()
+        train_acc = utils.AccuracyMeter()
 
         for i, (x, y) in enumerate(self.train_loader):
             x = x.to(self.device)
@@ -42,8 +42,8 @@ class Trainer(object):
     def validate(self):
         self.model.eval()
 
-        valid_loss = AverageMeter()
-        valid_acc = AccuracyMeter()
+        valid_loss = utils.AverageMeter()
+        valid_acc = utils.AccuracyMeter()
 
         with torch.no_grad():
             for i, (x, y) in enumerate(self.valid_loader):
