@@ -1,11 +1,11 @@
 import torch
 import torch.nn.functional as F
-from torch.autograd import Variable
 
 from utils import AccuracyMeter, AverageMeter, MovingAverageMeter
 
 
 class Trainer(object):
+
     def __init__(self, model, optimizer, train_loader, valid_loader, device):
         self.model = model
         self.optimizer = optimizer
