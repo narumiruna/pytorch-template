@@ -20,7 +20,7 @@ class Trainer(object):
         train_loss = utils.MovingAverageMeter()
         train_acc = utils.AccuracyMeter()
 
-        for i, (x, y) in enumerate(self.train_loader):
+        for x, y in self.train_loader:
             x = x.to(self.device)
             y = y.to(self.device)
 
@@ -46,7 +46,7 @@ class Trainer(object):
         valid_acc = utils.AccuracyMeter()
 
         with torch.no_grad():
-            for i, (x, y) in enumerate(self.valid_loader):
+            for x, y in self.valid_loader:
                 x = x.to(self.device)
                 y = y.to(self.device)
 
