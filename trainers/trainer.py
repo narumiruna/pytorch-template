@@ -32,10 +32,7 @@ class Trainer(object):
             self.optimizer.step()
 
             train_loss.update(float(loss.data))
-
-            y_pred = output.data.max(dim=1)[1]
-            correct = int(y_pred.eq(y.data).cpu().sum())
-            train_acc.update(correct, x.size(0))
+            train_acc.update(output, y)
 
         return train_loss.average, train_acc.accuracy
 
@@ -54,9 +51,6 @@ class Trainer(object):
                 loss = F.cross_entropy(output, y)
 
                 valid_loss.update(float(loss.data), x.size(0))
-
-                y_pred = output.data.max(dim=1)[1]
-                correct = int(y_pred.eq(y.data).cpu().sum())
-                valid_acc.update(correct, x.size(0))
+                valid_acc.update(output, y)
 
         return valid_loss.average, valid_acc.accuracy

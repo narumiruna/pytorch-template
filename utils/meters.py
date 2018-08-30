@@ -1,9 +1,11 @@
 class Meter():
+
     def update(self):
         raise NotImplementedError
 
 
 class AverageMeter(Meter):
+
     def __init__(self):
         self.sum = 0
         self.count = 0
@@ -16,6 +18,7 @@ class AverageMeter(Meter):
 
 
 class MovingAverageMeter(Meter):
+
     def __init__(self):
         self.average = None
 
@@ -27,12 +30,18 @@ class MovingAverageMeter(Meter):
 
 
 class AccuracyMeter(Meter):
+
     def __init__(self):
         self.correct = 0
         self.count = 0
-        self.accuracy = None
 
-    def update(self, correct, number):
+    def update(self, output, y):
+        y_pred = output.data.argmax(dim=1)
+        correct = y_pred.eq(y.data).cpu().sum().item()
+
         self.correct += correct
-        self.count += number
-        self.accuracy = self.correct / self.count
+        self.count += output.size(0)
+
+    @property
+    def accuracy(self):
+        return self.correct / self.count
