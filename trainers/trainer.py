@@ -31,7 +31,7 @@ class Trainer(object):
             loss.backward()
             self.optimizer.step()
 
-            train_loss.update(float(loss.data))
+            train_loss.update(loss.item())
             train_acc.update(output, y)
 
         return train_loss.average, train_acc.accuracy
@@ -50,7 +50,7 @@ class Trainer(object):
                 output = self.model(x)
                 loss = F.cross_entropy(output, y)
 
-                valid_loss.update(float(loss.data), x.size(0))
+                valid_loss.update(loss.item(), x.size(0))
                 valid_acc.update(output, y)
 
         return valid_loss.average, valid_acc.accuracy
