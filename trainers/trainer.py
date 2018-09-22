@@ -97,4 +97,5 @@ class Trainer(object):
         for key, value in state_dict.items():
             state_dict[key] = value.cpu()
 
+        os.makedirs(os.path.dirname(f), exist_ok=True)
         torch.save(state_dict, f)
