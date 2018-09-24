@@ -3,11 +3,10 @@ import os
 from datetime import datetime
 
 import torch
-from torch import nn
+from torch import nn, optim
 
-from . import networks
-from . import utils
-from .common import DatasetFactory, LRSchedulerFactory, OptimFactory, TrainerFactory
+from . import datasets, networks, trainers, utils
+from .common import Factory
 
 
 def main():
@@ -35,11 +34,12 @@ def main():
         net = nn.DataParallel(net)
     net.to(device)
 
-    optimizer = OptimFactory().create_from_config(config, net.parameters())
-    lr_scheduler = LRSchedulerFactory().create_from_config(config, optimizer)
-    train_loader, valid_loader = DatasetFactory().create_from_config(config)
+    optimizer = Factory(optim, 'optim').create(config, net.parameters())
+    lr_scheduler = Factory(optim.lr_scheduler, 'lr_scheduler').create(
+        config, optimizer)
+    train_loader, valid_loader = Factory(datasets, 'datasets').create(config)
 
-    trainer = TrainerFactory().create_from_config(
+    trainer = Factory(trainers, 'trainers').create(
         config, net, optimizer, train_loader, valid_loader, device, output_dir,
         lr_scheduler)
 

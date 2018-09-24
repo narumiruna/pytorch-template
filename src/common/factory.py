@@ -1,40 +1,27 @@
-from torch import optim
-from torch.optim import lr_scheduler
-
-from .. import datasets
-from .. import trainers
+import inspect
 
 
 class Factory(object):
-    module = None
-    module_name = None
 
-    def create(self, name, *args, **kwargs):
-        return getattr(self.module, name)(*args, **kwargs)
+    def __init__(self, module, key):
+        self.module = module
+        self.key = key
 
-    def create_from_config(self, config, *args):
+    def create(self, config, *args):
         if isinstance(config, dict):
-            key, value = config[self.module_name].popitem()
-            return self.create(key, *args, **value)
+            data = config[self.key]
+            name = data['name']
+
+            obj = getattr(self.module, name)
+
+            if inspect.isclass(obj):
+                varnames = obj.__init__.__code__.co_varnames
+            elif inspect.isfunction(obj):
+                varnames = obj.__code__.co_varnames
+
+            # remove unexpected keyword argument
+            kwargs = {k: v for k, v in data.items() if k in varnames}
+
+            return obj(*args, **kwargs)
         else:
             raise TypeError
-
-
-class OptimFactory(Factory):
-    module = optim
-    module_name = 'optim'
-
-
-class LRSchedulerFactory(Factory):
-    module = lr_scheduler
-    module_name = 'lr_scheduler'
-
-
-class DatasetFactory(Factory):
-    module = datasets
-    module_name = 'datasets'
-
-
-class TrainerFactory(Factory):
-    module = trainers
-    module_name = 'trainers'
