@@ -24,7 +24,8 @@ def main():
 
     config = utils.load_json(args.config)
 
-    output_dir = os.path.join('mnist', datetime.now().strftime('%Y%m%d_%H%M%S'))
+    output_dir = os.path.join('models',
+                              datetime.now().strftime('%Y%m%d_%H%M%S'))
 
     # save config to output dir
     utils.save_json(config, os.path.join(output_dir, 'config.json'))

@@ -100,9 +100,3 @@ class Trainer(object):
 
         os.makedirs(os.path.dirname(f), exist_ok=True)
         torch.save(state_dict, f)
-
-    @staticmethod
-    def from_config(config):
-
-        from common import Factory
-        Factory(optim, 'optim').create_from_config(config)
