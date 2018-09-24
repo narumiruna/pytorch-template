@@ -3,5 +3,5 @@
 ## Usage
 
 ```
-$ python main.py
+$ python -m src.run -c configs/default.json
 ```
