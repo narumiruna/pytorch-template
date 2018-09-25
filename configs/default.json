@@ -1,0 +1,19 @@
+{
+    "optim": {
+        "name": "Adam",
+        "lr": 1e-3
+    },
+    "lr_scheduler": {
+        "name": "StepLR",
+        "step_size": 20
+    },
+    "datasets": {
+        "name": "mnist_loader",
+        "root": "data",
+        "batch_size": 128
+    },
+    "trainers": {
+        "name": "Trainer",
+        "epochs": 20
+    }
+}
