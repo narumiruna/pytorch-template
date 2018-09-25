@@ -38,7 +38,7 @@ class Trainer(object):
             valid_loss, valid_acc = self.validate()
 
             print(
-                'epoch: {}/{},'.format(epoch + 1, self.epochs),
+                'Epoch: {}/{},'.format(epoch + 1, self.epochs),
                 'train loss: {:.4f}, train acc: {:.2f}%,'.format(
                     train_loss, train_acc * 100),
                 'valid loss: {:.4f}, valid acc: {:.2f}%'.format(
