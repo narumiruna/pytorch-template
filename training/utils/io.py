@@ -1,5 +1,4 @@
 import json
-import os
 
 
 def load_json(f):
@@ -7,7 +6,6 @@ def load_json(f):
         return json.load(fp)
 
 
-def save_json(obj, f):
-    os.makedirs(os.path.dirname(f), exist_ok=True)
+def save_json(obj, f, **kwargs):
     with open(f, 'w') as fp:
-        json.dump(obj, fp, indent=4)
+        json.dump(obj, fp, **kwargs)

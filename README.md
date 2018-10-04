@@ -1,7 +1,14 @@
-# Pytorch Template
+# Training
 
-## Usage
+## Installation
 
+```sh
+$ pip install -r requirements.txt
+$ python setup.py install
 ```
-$ python -m src.run -c configs/default.json
+
+## Run
+
+```sh
+$ python -m training.train -c configs/default.json
 ```

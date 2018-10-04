@@ -1,5 +1,7 @@
 from __future__ import division
 
+import torch
+
 
 class Accuracy(object):
 
@@ -7,10 +9,10 @@ class Accuracy(object):
         self.correct = 0
         self.count = 0
 
-    def update(self, pred, label):
-        correct = pred.eq(label.data).sum().item()
+    def update(self, pred: torch.Tensor, true: torch.Tensor):
+        assert pred.size(0) == true.size(0)
 
-        self.correct += correct
+        self.correct += pred.data.eq(true.data).sum().item()
         self.count += pred.size(0)
 
     @property

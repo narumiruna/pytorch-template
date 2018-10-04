@@ -1,19 +1,21 @@
 {
-    "optim": {
-        "name": "Adam",
-        "lr": 1e-3
-    },
-    "lr_scheduler": {
-        "name": "StepLR",
-        "step_size": 20
-    },
-    "datasets": {
-        "name": "mnist_loader",
-        "root": "data",
-        "batch_size": 128
-    },
-    "trainers": {
-        "name": "Trainer",
-        "epochs": 20
-    }
+    "trainers": [{
+        "name": "ImageClassificationTrainer",
+        "epochs": 10,
+        "output_dir": "models",
+        "optimizer": {
+            "name": "Adam",
+            "lr": 1e-3
+        },
+        "network": {
+            "name": "Net"
+        },
+        "dataset": {
+            "name": "mnist",
+            "root": "data",
+            "download": true,
+            "batch_size": 128,
+            "valid_ratio": 0.1
+        }
+    }]
 }
