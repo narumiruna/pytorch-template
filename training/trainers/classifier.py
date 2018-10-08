@@ -7,31 +7,8 @@ from torch.utils import data
 
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
-from ..networks import NetworkFactory
-from ..optimizers import TorchOptimizerFactory
-
-
-def evaluate(network: nn.Module, dataloader: data.DataLoader,
-             device: torch.device):
-    network.eval()
-
-    eval_loss = Average()
-    eval_acc = Accuracy()
-
-    with torch.no_grad():
-        for x, y in dataloader:
-            x = x.to(device)
-            y = y.to(device)
-
-            output = network(x)
-            loss = F.cross_entropy(output, y)
-
-            pred = output.argmax(dim=1)
-
-            eval_loss.update(loss.item(), number=x.size(0))
-            eval_acc.update(pred, y)
-
-    return eval_loss.average, eval_acc.accuracy
+from ..networks import NetFactory
+from ..optimizers import OptimFactory, SchedulerFactory
 
 
 class ImageClassificationTrainer(object):
@@ -41,61 +18,52 @@ class ImageClassificationTrainer(object):
                  network: dict,
                  optimizer: dict,
                  dataset: dict,
+                 scheduler: dict,
                  use_cuda: bool = True,
                  output_dir: str = None):
-        train_dataloader, valid_dataloader, test_dataloader = DatasetFactory.create(
-            **dataset)
         self.device = torch.device('cuda' if torch.cuda.is_available() and
                                    use_cuda else 'cpu')
-        self.network = NetworkFactory.create(**network).to(self.device)
-        self.optimizer = TorchOptimizerFactory.create(self.network.parameters(),
-                                                      **optimizer)
-        self.train_dataloader = train_dataloader
-        self.valid_dataloader = valid_dataloader
-        self.test_dataloader = test_dataloader
+        self.net = NetFactory.create(**network).to(self.device)
+        self.optimizer = OptimFactory.create(self.net.parameters(), **optimizer)
+        self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
+        self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
         self.epochs = epochs
         self.output_dir = output_dir
 
-        self.train()
+        self.fit()
 
-    def train(self):
-
-        best_valid_acc = 0
-
+    def fit(self):
+        best_test_acc = 0
         for epoch in range(1, self.epochs + 1):
-            train_loss, train_acc = self._train_epoch()
-            valid_loss, valid_acc = self._valid_epoch()
+            self.scheduler.step()
+
+            train_loss, train_acc = self.train()
+            test_loss, test_acc = self.test()
 
             print(
                 'Training epoch: {}/{},'.format(epoch, self.epochs),
                 'train loss: {:.6f}, train acc: {:.2f}%,'.format(
                     train_loss, train_acc * 100),
-                'valid loss: {:.6f}, valid acc: {:.2f}%.'.format(
-                    valid_loss, valid_acc * 100))
+                'test loss: {:.6f}, test acc: {:.2f}%.'.format(
+                    test_loss, test_acc * 100))
 
-            # TODO checkpoint
-            if valid_acc > best_valid_acc:
-                best_valid_acc = valid_acc
+            if test_acc > best_test_acc:
+                best_test_acc = test_acc
 
                 f = os.path.join(self.output_dir, 'weights.pt')
-                self._save_weights(f)
+                self.save_weights(f)
 
-        eval_loss, eval_acc = evaluate(self.network, self.test_dataloader,
-                                       self.device)
-        print('Test loss: {:.6f}, test acc: {:.2f}%.'.format(
-            eval_loss, eval_acc * 100))
-
-    def _train_epoch(self):
-        self.network.train()
+    def train(self):
+        self.net.train()
 
         train_loss = Average()
         train_acc = Accuracy()
 
-        for x, y in self.train_dataloader:
+        for x, y in self.train_loader:
             x = x.to(self.device)
             y = y.to(self.device)
 
-            output = self.network(x)
+            output = self.net(x)
             loss = F.cross_entropy(output, y)
 
             self.optimizer.zero_grad()
@@ -109,16 +77,34 @@ class ImageClassificationTrainer(object):
 
         return train_loss.average, train_acc.accuracy
 
-    def _valid_epoch(self):
-        return evaluate(self.network, self.valid_dataloader, self.device)
+    def test(self):
+        self.net.eval()
 
-    def _save_weights(self, f):
-        self.network.eval()
+        test_loss = Average()
+        test_acc = Accuracy()
 
-        state_dict = self.network.state_dict()
+        with torch.no_grad():
+            for x, y in self.train_loader:
+                x = x.to(self.device)
+                y = y.to(self.device)
 
-        for k, v in state_dict.items():
-            state_dict[k] = v.cpu()
+                output = self.net(x)
+                loss = F.cross_entropy(output, y)
+
+                pred = output.argmax(dim=1)
+
+                test_loss.update(loss.item(), number=x.size(0))
+                test_acc.update(pred, y)
+
+        return test_loss.average, test_acc.accuracy
+
+    def save_weights(self, f):
+        self.net.eval()
+
+        state_dict = self.net.state_dict()
+
+        for key, value in state_dict.items():
+            state_dict[key] = value.cpu()
 
         os.makedirs(os.path.dirname(f), exist_ok=True)
         torch.save(state_dict, f)

@@ -1,21 +1,21 @@
 {
-    "trainers": [{
-        "name": "ImageClassificationTrainer",
-        "epochs": 10,
-        "output_dir": "models",
-        "optimizer": {
-            "name": "Adam",
-            "lr": 1e-3
-        },
-        "network": {
-            "name": "Net"
-        },
-        "dataset": {
-            "name": "mnist",
-            "root": "data",
-            "download": true,
-            "batch_size": 128,
-            "valid_ratio": 0.1
-        }
-    }]
+    "name": "ImageClassificationTrainer",
+    "epochs": 20,
+    "output_dir": "models",
+    "optimizer": {
+        "name": "Adam",
+        "lr": 1e-3
+    },
+    "scheduler": {
+        "name": "StepLR",
+        "step_size": 10
+    },
+    "network": {
+        "name": "Net"
+    },
+    "dataset": {
+        "name": "mnist",
+        "root": "data",
+        "batch_size": 128
+    }
 }

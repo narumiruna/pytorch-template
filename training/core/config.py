@@ -7,15 +7,14 @@ from ..trainers import TrainerFactory
 class ConfigLoader(object):
 
     def __init__(self):
-        self._parser_args()
-        self._config = load_json(self._args.config)
+        self.parse()
+        self.config = load_json(self.args.config)
 
-    def _parser_args(self):
+    def parse(self):
         parser = argparse.ArgumentParser()
         parser.add_argument(
             '-c', '--config', type=str, default='configs/default.json')
-        self._args = parser.parse_args()
+        self.args = parser.parse_args()
 
     def run(self):
-        for trainer in self._config['trainers']:
-            TrainerFactory.create(**trainer)
+        TrainerFactory.create(**self.config)

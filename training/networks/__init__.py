@@ -3,7 +3,7 @@ import sys
 from .net import Net
 
 
-class NetworkFactory(object):
+class NetFactory(object):
 
     @staticmethod
     def create(*args, **kwargs):
