@@ -2,8 +2,6 @@ import os
 
 import torch
 import torch.nn.functional as F
-from torch import nn
-from torch.utils import data
 
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
