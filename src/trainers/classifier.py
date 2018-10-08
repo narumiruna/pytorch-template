@@ -82,7 +82,7 @@ class ImageClassificationTrainer(object):
         test_acc = Accuracy()
 
         with torch.no_grad():
-            for x, y in self.train_loader:
+            for x, y in self.test_loader:
                 x = x.to(self.device)
                 y = y.to(self.device)
 
