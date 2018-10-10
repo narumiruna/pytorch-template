@@ -1,5 +1,6 @@
 import sys
 
+from .dcgan import dcgan
 from .net import Net
 
 
