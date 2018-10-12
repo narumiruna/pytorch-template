@@ -26,7 +26,9 @@ class ImageClassificationTrainer(object):
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
         self.epochs = epochs
-        self.output_dir = output_dir
+
+        self.checkpoint_path = os.path.join(output_dir, 'checkpoint.pth')
+        os.makedirs(output_dir, exist_ok=True)
 
     def run(self):
         self.fit()
@@ -50,8 +52,7 @@ class ImageClassificationTrainer(object):
             if test_acc > best_acc:
                 best_acc = test_acc
 
-                f = os.path.join(self.output_dir, 'weights.pt')
-                self.save_weights(f)
+                self.save_checkpoint(epoch, best_acc)
 
     def train(self):
         self.net.train()
@@ -108,3 +109,16 @@ class ImageClassificationTrainer(object):
 
         os.makedirs(os.path.dirname(f), exist_ok=True)
         torch.save(state_dict, f)
+
+    def save_checkpoint(self, epoch, best_acc):
+        self.net.eval()
+
+        checkpoint = {
+            'net': {k: v.cpu() for k, v in self.net.state_dict().items()},
+            'optimizer': self.optimizer.state_dict(),
+            'scheduler': self.scheduler.state_dict(),
+            'epoch': epoch,
+            'best_acc': best_acc
+        }
+
+        torch.save(checkpoint, self.checkpoint_path)
