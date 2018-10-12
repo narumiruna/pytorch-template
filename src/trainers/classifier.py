@@ -28,10 +28,11 @@ class ImageClassificationTrainer(object):
         self.epochs = epochs
         self.output_dir = output_dir
 
+    def run(self):
         self.fit()
 
     def fit(self):
-        best_test_acc = 0
+        best_acc = 0
         for epoch in range(1, self.epochs + 1):
             self.scheduler.step()
 
@@ -43,10 +44,11 @@ class ImageClassificationTrainer(object):
                 'train loss: {:.6f}, train acc: {:.2f}%,'.format(
                     train_loss, train_acc * 100),
                 'test loss: {:.6f}, test acc: {:.2f}%.'.format(
-                    test_loss, test_acc * 100))
+                    test_loss,
+                    test_acc * 100), 'best acc: {:.2f}%'.format(best_acc * 100))
 
-            if test_acc > best_test_acc:
-                best_test_acc = test_acc
+            if test_acc > best_acc:
+                best_acc = test_acc
 
                 f = os.path.join(self.output_dir, 'weights.pt')
                 self.save_weights(f)

@@ -17,4 +17,4 @@ class ConfigLoader(object):
         self.args = parser.parse_args()
 
     def run(self):
-        TrainerFactory.create(**self.config)
+        TrainerFactory.create(**self.config).run()
