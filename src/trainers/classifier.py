@@ -26,33 +26,39 @@ class ImageClassificationTrainer(object):
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
         self.epochs = epochs
+        self.output_dir = output_dir
 
         self.checkpoint_path = os.path.join(output_dir, 'checkpoint.pth')
-        os.makedirs(output_dir, exist_ok=True)
+
+        self.start_epoch = 1
+        self.best_acc = 0
 
     def run(self):
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        if os.path.exists(self.checkpoint_path):
+            self.restore_checkpoint()
+
         self.fit()
 
     def fit(self):
-        best_acc = 0
-        for epoch in range(1, self.epochs + 1):
+        for epoch in range(self.start_epoch, self.epochs + 1):
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.test()
+
+            if test_acc > self.best_acc:
+                self.best_acc = test_acc
+                self.save_checkpoint(epoch)
 
             print(
                 'Training epoch: {}/{},'.format(epoch, self.epochs),
                 'train loss: {:.6f}, train acc: {:.2f}%,'.format(
                     train_loss, train_acc * 100),
                 'test loss: {:.6f}, test acc: {:.2f}%.'.format(
-                    test_loss,
-                    test_acc * 100), 'best acc: {:.2f}%'.format(best_acc * 100))
-
-            if test_acc > best_acc:
-                best_acc = test_acc
-
-                self.save_checkpoint(epoch, best_acc)
+                    test_loss, test_acc * 100), 'best acc: {:.2f}%'.format(
+                        self.best_acc * 100))
 
     def train(self):
         self.net.train()
@@ -99,18 +105,7 @@ class ImageClassificationTrainer(object):
 
         return test_loss.average, test_acc.accuracy
 
-    def save_weights(self, f):
-        self.net.eval()
-
-        state_dict = self.net.state_dict()
-
-        for key, value in state_dict.items():
-            state_dict[key] = value.cpu()
-
-        os.makedirs(os.path.dirname(f), exist_ok=True)
-        torch.save(state_dict, f)
-
-    def save_checkpoint(self, epoch, best_acc):
+    def save_checkpoint(self, epoch):
         self.net.eval()
 
         checkpoint = {
@@ -118,7 +113,17 @@ class ImageClassificationTrainer(object):
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
             'epoch': epoch,
-            'best_acc': best_acc
+            'best_acc': self.best_acc
         }
 
         torch.save(checkpoint, self.checkpoint_path)
+
+    def restore_checkpoint(self):
+        checkpoint = torch.load(self.checkpoint_path)
+
+        self.net.load_state_dict(checkpoint['net'])
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
+        self.scheduler.load_state_dict(checkpoint['scheduler'])
+
+        self.start_epoch = checkpoint['epoch'] + 1
+        self.best_acc = checkpoint['best_acc']
