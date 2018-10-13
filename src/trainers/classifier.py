@@ -48,17 +48,15 @@ class ImageClassificationTrainer(object):
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.test()
 
-            if test_acc > self.best_acc:
-                self.best_acc = test_acc
+            if test_acc.accuracy > self.best_acc:
+                self.best_acc = test_acc.accuracy
                 self.save_checkpoint(epoch)
 
             print(
                 'Training epoch: {}/{},'.format(epoch, self.epochs),
-                'train loss: {:.6f}, train acc: {:.2f}%,'.format(
-                    train_loss, train_acc * 100),
-                'test loss: {:.6f}, test acc: {:.2f}%.'.format(
-                    test_loss, test_acc * 100), 'best acc: {:.2f}%'.format(
-                        self.best_acc * 100))
+                'train loss: {}, train acc: {},'.format(train_loss, train_acc),
+                'test loss: {}, test acc: {},'.format(test_loss, test_acc),
+                'best acc: {:.2f}%.'.format(self.best_acc * 100))
 
     def train(self):
         self.net.train()
@@ -82,7 +80,7 @@ class ImageClassificationTrainer(object):
             train_loss.update(loss.item(), number=x.size(0))
             train_acc.update(pred, y)
 
-        return train_loss.average, train_acc.accuracy
+        return train_loss, train_acc
 
     def test(self):
         self.net.eval()
@@ -103,7 +101,7 @@ class ImageClassificationTrainer(object):
                 test_loss.update(loss.item(), number=x.size(0))
                 test_acc.update(pred, y)
 
-        return test_loss.average, test_acc.accuracy
+        return test_loss, test_acc
 
     def save_checkpoint(self, epoch):
         self.net.eval()

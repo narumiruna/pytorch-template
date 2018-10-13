@@ -18,3 +18,6 @@ class Accuracy(object):
     @property
     def accuracy(self):
         return self.correct / self.count
+
+    def __str__(self):
+        return '{:.2f}%'.format(self.accuracy * 100)
