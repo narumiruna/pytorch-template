@@ -19,12 +19,15 @@ class ImageClassificationTrainer(object):
                  scheduler: dict,
                  use_cuda: bool = True,
                  output_dir: str = None):
+        train_loader, test_loader = DatasetFactory.create(**dataset)
+
         self.device = torch.device('cuda' if torch.cuda.is_available() and
                                    use_cuda else 'cpu')
         self.net = NetFactory.create(**network).to(self.device)
         self.optimizer = OptimFactory.create(self.net.parameters(), **optimizer)
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
-        self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
+        self.train_loader = train_loader
+        self.test_loader = test_loader
         self.epochs = epochs
         self.output_dir = output_dir
 

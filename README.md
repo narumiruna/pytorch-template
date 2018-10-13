@@ -10,5 +10,5 @@ $ python setup.py install
 ## Run
 
 ```sh
-$ python -m training.train -c configs/default.json
+$ python -u -m src.train -c configs/default.json |& tee train.log
 ```
