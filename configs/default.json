@@ -11,7 +11,7 @@
         "step_size": 10
     },
     "network": {
-        "name": "Net"
+        "name": "lenet"
     },
     "dataset": {
         "name": "mnist",
