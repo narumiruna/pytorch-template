@@ -1,7 +1,6 @@
 import sys
 
-from .dcgan import dcgan
-from .lenet import lenet
+from .lenet import LeNet
 
 
 class NetFactory(object):

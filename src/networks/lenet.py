@@ -28,7 +28,3 @@ class LeNet(nn.Module):
         out = out.view(x.size(0), 16 * 5 * 5)
         out = self.classifier(out)
         return out
-
-
-def lenet():
-    return LeNet()
