@@ -3,8 +3,11 @@ from torchvision import datasets, transforms
 
 
 def mnist(root='data', batch_size=128):
-    transform = transforms.Compose(
-        [transforms.Resize(32), transforms.ToTensor()])
+    transform = transforms.Compose([
+        transforms.Resize(32),
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
 
     train_loader = data.DataLoader(
         dataset=datasets.MNIST(
