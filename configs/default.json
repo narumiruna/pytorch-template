@@ -10,7 +10,7 @@
         "name": "StepLR",
         "step_size": 10
     },
-    "network": {
+    "net": {
         "name": "LeNet"
     },
     "dataset": {

@@ -13,7 +13,7 @@ class ImageClassificationTrainer(object):
 
     def __init__(self,
                  epochs: int,
-                 network: dict,
+                 net: dict,
                  optimizer: dict,
                  dataset: dict,
                  scheduler: dict,
@@ -23,7 +23,7 @@ class ImageClassificationTrainer(object):
 
         self.device = torch.device('cuda' if torch.cuda.is_available() and
                                    use_cuda else 'cpu')
-        self.net = NetFactory.create(**network).to(self.device)
+        self.net = NetFactory.create(**net).to(self.device)
         self.optimizer = OptimFactory.create(self.net.parameters(), **optimizer)
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader = train_loader
