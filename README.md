@@ -10,5 +10,5 @@ $ python setup.py install
 ## Run
 
 ```sh
-$ python -u -m src.train -c configs/default.json |& tee train.log
+$ python -u -m src.train -c configs/mnist.json -o outputs/mnist |& tee train.log
 ```
