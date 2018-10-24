@@ -7,9 +7,9 @@ from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
 from ..networks import NetFactory
 from ..optimizers import OptimFactory, SchedulerFactory
+from ..core.trainer import Trainer
 
-
-class ImageClassificationTrainer(object):
+class ImageClassificationTrainer(Trainer):
 
     def __init__(self,
                  epochs: int,
@@ -17,22 +17,17 @@ class ImageClassificationTrainer(object):
                  optimizer: dict,
                  dataset: dict,
                  scheduler: dict,
-                 use_cuda: bool = True,
-                 output_dir: str = None):
+                 **kwargs):
+        super(ImageClassificationTrainer, self).__init__(**kwargs)
         train_loader, test_loader = DatasetFactory.create(**dataset)
-
-        self.device = torch.device('cuda' if torch.cuda.is_available() and
-                                   use_cuda else 'cpu')
         self.net = NetFactory.create(**net).to(self.device)
         self.optimizer = OptimFactory.create(self.net.parameters(), **optimizer)
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.epochs = epochs
-        self.output_dir = output_dir
 
-        self.checkpoint_path = os.path.join(output_dir, 'checkpoint.pth')
-
+        self.checkpoint_path = os.path.join(self.output_dir, 'checkpoint.pth')
         self.start_epoch = 1
         self.best_acc = 0
 

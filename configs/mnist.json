@@ -1,7 +1,6 @@
 {
     "name": "ImageClassificationTrainer",
     "epochs": 20,
-    "output_dir": "models",
     "optimizer": {
         "name": "Adam",
         "lr": 1e-3

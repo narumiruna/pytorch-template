@@ -1,20 +1,33 @@
 import argparse
+import os
 
-from ..utils import load_json
 from ..trainers import TrainerFactory
+from ..utils import load_json, save_json
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-c', '--config-file', type=str, default='configs/mnist.json')
+    parser.add_argument('-o', '--output-dir', type=str, default='outputs')
+    return parser.parse_args()
 
 
 class ConfigLoader(object):
 
     def __init__(self):
-        self.parse()
-        self.config = load_json(self.args.config)
-
-    def parse(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            '-c', '--config', type=str, default='configs/default.json')
-        self.args = parser.parse_args()
+        args = parse_args()
+        self.config_file = args.config_file
+        self.config = load_json(args.config_file)
+        self.output_dir = args.output_dir
 
     def run(self):
-        TrainerFactory.create(**self.config).run()
+        self.save_config()
+
+        TrainerFactory.create(
+            output_dir=self.output_dir, use_cuda=True, **self.config).run()
+
+    def save_config(self):
+        os.makedirs(self.output_dir, exist_ok=True)
+        f = os.path.join(self.output_dir, os.path.basename(self.config_file))
+        save_json(self.config, f, indent=4)
