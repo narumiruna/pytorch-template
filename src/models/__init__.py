@@ -3,7 +3,7 @@ import sys
 from .lenet import LeNet
 
 
-class NetFactory(object):
+class ModelFactory(object):
 
     @staticmethod
     def create(*args, **kwargs):

@@ -3,25 +3,22 @@ import os
 import torch
 import torch.nn.functional as F
 
+from ..core.trainer import Trainer
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
-from ..networks import NetFactory
+from ..models import ModelFactory
 from ..optimizers import OptimFactory, SchedulerFactory
-from ..core.trainer import Trainer
+
 
 class ImageClassificationTrainer(Trainer):
 
-    def __init__(self,
-                 epochs: int,
-                 net: dict,
-                 optimizer: dict,
-                 dataset: dict,
-                 scheduler: dict,
-                 **kwargs):
+    def __init__(self, epochs: int, model: dict, optimizer: dict, dataset: dict,
+                 scheduler: dict, **kwargs):
         super(ImageClassificationTrainer, self).__init__(**kwargs)
         train_loader, test_loader = DatasetFactory.create(**dataset)
-        self.net = NetFactory.create(**net).to(self.device)
-        self.optimizer = OptimFactory.create(self.net.parameters(), **optimizer)
+        self.model = ModelFactory.create(**model).to(self.device)
+        self.optimizer = OptimFactory.create(self.model.parameters(),
+                                             **optimizer)
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader = train_loader
         self.test_loader = test_loader
@@ -57,7 +54,7 @@ class ImageClassificationTrainer(Trainer):
                 'best acc: {:.2f}%.'.format(self.best_acc * 100))
 
     def train(self):
-        self.net.train()
+        self.model.train()
 
         train_loss = Average()
         train_acc = Accuracy()
@@ -66,7 +63,7 @@ class ImageClassificationTrainer(Trainer):
             x = x.to(self.device)
             y = y.to(self.device)
 
-            output = self.net(x)
+            output = self.model(x)
             loss = F.cross_entropy(output, y)
 
             self.optimizer.zero_grad()
@@ -81,7 +78,7 @@ class ImageClassificationTrainer(Trainer):
         return train_loss, train_acc
 
     def test(self):
-        self.net.eval()
+        self.model.eval()
 
         test_loss = Average()
         test_acc = Accuracy()
@@ -91,7 +88,7 @@ class ImageClassificationTrainer(Trainer):
                 x = x.to(self.device)
                 y = y.to(self.device)
 
-                output = self.net(x)
+                output = self.model(x)
                 loss = F.cross_entropy(output, y)
 
                 pred = output.argmax(dim=1)
@@ -102,10 +99,10 @@ class ImageClassificationTrainer(Trainer):
         return test_loss, test_acc
 
     def save_checkpoint(self, epoch):
-        self.net.eval()
+        self.model.eval()
 
         checkpoint = {
-            'net': {k: v.cpu() for k, v in self.net.state_dict().items()},
+            'net': {k: v.cpu() for k, v in self.model.state_dict().items()},
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
             'epoch': epoch,
@@ -117,7 +114,7 @@ class ImageClassificationTrainer(Trainer):
     def restore_checkpoint(self):
         checkpoint = torch.load(self.checkpoint_path)
 
-        self.net.load_state_dict(checkpoint['net'])
+        self.model.load_state_dict(checkpoint['net'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.scheduler.load_state_dict(checkpoint['scheduler'])
 
