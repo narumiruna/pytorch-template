@@ -14,10 +14,8 @@ def parse_args():
 def main():
     args = parse_args()
 
-    config = Config()
-    config.load_config(args.config_file)
-    f = os.path.join(args.output_dir, config.basename)
-    config.save_config(f)
+    config = Config(args.config_file)
+    config.save_config(os.path.join(args.output_dir, 'config.json'))
 
     runner = Runner(config)
     runner.run(output_dir=args.output_dir, use_cuda=True)
