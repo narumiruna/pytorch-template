@@ -4,7 +4,6 @@ import torch
 
 
 class Accuracy(object):
-
     def __init__(self):
         self.correct = 0
         self.count = 0

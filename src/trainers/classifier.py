@@ -40,7 +40,7 @@ class ImageClassificationTrainer(Trainer):
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
-            test_loss, test_acc = self.test()
+            test_loss, test_acc = self.evaluate()
 
             if test_acc.accuracy > self.best_acc:
                 self.best_acc = test_acc.accuracy
@@ -76,11 +76,11 @@ class ImageClassificationTrainer(Trainer):
 
         return train_loss, train_acc
 
-    def test(self):
+    def evaluate(self):
         self.model.eval()
 
-        test_loss = Average()
-        test_acc = Accuracy()
+        eval_loss = Average()
+        eval_acc = Accuracy()
 
         with torch.no_grad():
             for x, y in self.test_loader:
@@ -92,10 +92,10 @@ class ImageClassificationTrainer(Trainer):
 
                 pred = output.argmax(dim=1)
 
-                test_loss.update(loss.item(), number=x.size(0))
-                test_acc.update(pred, y)
+                eval_loss.update(loss.item(), number=x.size(0))
+                eval_acc.update(pred, y)
 
-        return test_loss, test_acc
+        return eval_loss, eval_acc
 
     def save_checkpoint(self, epoch):
         self.model.eval()
