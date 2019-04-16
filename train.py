@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from src.core.config import Config
-from src.core.runner import Runner
+from src.config import Config
+from src.runner import Runner
 
 
 def parse_args():
