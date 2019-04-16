@@ -1,15 +1,17 @@
 import argparse
 import os
 
-from .core.config import Config
-from .core.runner import Runner
+from src.core.config import Config
+from src.core.runner import Runner
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.json')
+    parser.add_argument(
+        '-c', '--config-file', type=str, default='configs/mnist.json')
     parser.add_argument('-o', '--output-dir', type=str, default='outputs')
     return parser.parse_args()
+
 
 def main():
     args = parse_args()
