@@ -7,7 +7,10 @@ from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
 from ..models import ModelFactory
 from ..optim import OptimFactory, SchedulerFactory
+from ..utils import get_logger
 from .trainer import Trainer
+
+LOGGER = get_logger(__name__)
 
 
 class ImageClassificationTrainer(Trainer):
@@ -37,6 +40,7 @@ class ImageClassificationTrainer(Trainer):
 
     def fit(self):
         for epoch in range(self.start_epoch, self.epochs + 1):
+
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
@@ -46,10 +50,19 @@ class ImageClassificationTrainer(Trainer):
                 self.best_acc = test_acc.accuracy
                 self.save_checkpoint(epoch)
 
-            print('Training epoch: {}/{},'.format(epoch, self.epochs),
-                  'train loss: {}, train acc: {},'.format(
-                      train_loss, train_acc), 'test loss: {}, test acc: {},'.format(
-                          test_loss, test_acc), 'best acc: {:.2f}%.'.format(self.best_acc * 100))
+            LOGGER.info(
+                'Epoch: %d/%d, '
+                'train loss: %s, train acc: %s, '
+                'test loss: %s, test acc: %s, '
+                'best test acc: %.2f.',
+                epoch,
+                self.epochs,
+                train_loss,
+                train_acc,
+                test_loss,
+                test_acc,
+                self.best_acc * 100,
+            )
 
     def train(self):
         self.model.train()
