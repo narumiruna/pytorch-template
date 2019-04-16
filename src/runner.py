@@ -1,9 +1,8 @@
-from ..trainers import TrainerFactory
 from .config import Config
+from .trainers import TrainerFactory
 
 
 class Runner(object):
-
     def __init__(self, config: Config):
         self.config = config
 

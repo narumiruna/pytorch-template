@@ -3,17 +3,16 @@ import os
 import torch
 import torch.nn.functional as F
 
-from ..core.trainer import Trainer
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
 from ..models import ModelFactory
 from ..optimizers import OptimFactory, SchedulerFactory
+from .trainer import Trainer
 
 
 class ImageClassificationTrainer(Trainer):
-
-    def __init__(self, epochs: int, model: dict, optimizer: dict, dataset: dict,
-                 scheduler: dict, **kwargs):
+    def __init__(self, epochs: int, model: dict, optimizer: dict,
+                 dataset: dict, scheduler: dict, **kwargs):
         super(ImageClassificationTrainer, self).__init__(**kwargs)
         train_loader, test_loader = DatasetFactory.create(**dataset)
         self.model = ModelFactory.create(**model).to(self.device)
@@ -102,7 +101,8 @@ class ImageClassificationTrainer(Trainer):
         self.model.eval()
 
         checkpoint = {
-            'net': {k: v.cpu() for k, v in self.model.state_dict().items()},
+            'net': {k: v.cpu()
+                    for k, v in self.model.state_dict().items()},
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
             'epoch': epoch,
