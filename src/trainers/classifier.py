@@ -6,18 +6,18 @@ import torch.nn.functional as F
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
 from ..models import ModelFactory
-from ..optimizers import OptimFactory, SchedulerFactory
+from ..optim import OptimFactory, SchedulerFactory
 from .trainer import Trainer
 
 
 class ImageClassificationTrainer(Trainer):
-    def __init__(self, epochs: int, model: dict, optimizer: dict,
-                 dataset: dict, scheduler: dict, **kwargs):
+
+    def __init__(self, epochs: int, model: dict, optimizer: dict, dataset: dict, scheduler: dict,
+                 **kwargs):
         super(ImageClassificationTrainer, self).__init__(**kwargs)
         train_loader, test_loader = DatasetFactory.create(**dataset)
         self.model = ModelFactory.create(**model).to(self.device)
-        self.optimizer = OptimFactory.create(self.model.parameters(),
-                                             **optimizer)
+        self.optimizer = OptimFactory.create(self.model.parameters(), **optimizer)
         self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
         self.train_loader = train_loader
         self.test_loader = test_loader
@@ -46,11 +46,10 @@ class ImageClassificationTrainer(Trainer):
                 self.best_acc = test_acc.accuracy
                 self.save_checkpoint(epoch)
 
-            print(
-                'Training epoch: {}/{},'.format(epoch, self.epochs),
-                'train loss: {}, train acc: {},'.format(train_loss, train_acc),
-                'test loss: {}, test acc: {},'.format(test_loss, test_acc),
-                'best acc: {:.2f}%.'.format(self.best_acc * 100))
+            print('Training epoch: {}/{},'.format(epoch, self.epochs),
+                  'train loss: {}, train acc: {},'.format(
+                      train_loss, train_acc), 'test loss: {}, test acc: {},'.format(
+                          test_loss, test_acc), 'best acc: {:.2f}%.'.format(self.best_acc * 100))
 
     def train(self):
         self.model.train()
@@ -101,8 +100,7 @@ class ImageClassificationTrainer(Trainer):
         self.model.eval()
 
         checkpoint = {
-            'net': {k: v.cpu()
-                    for k, v in self.model.state_dict().items()},
+            'net': {k: v.cpu() for k, v in self.model.state_dict().items()},
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
             'epoch': epoch,
