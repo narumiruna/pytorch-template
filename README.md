@@ -4,5 +4,5 @@
 ## Run
 
 ```sh
-$ python -u train.py -c configs/mnist.json -o outputs/mnist |& tee mnist.log
+$ python -u train.py -c configs/mnist.json -o outputs/mnist
 ```
