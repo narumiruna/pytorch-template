@@ -1,10 +1,6 @@
 import sys
-from .classifier import ImageClassificationTrainer
 
+from ..utils import get_factory
+from .classification import ImageClassificationTrainer
 
-class TrainerFactory(object):
-
-    @staticmethod
-    def create(*args, **kwargs):
-        name = kwargs.pop('name')
-        return getattr(sys.modules[__name__], name)(*args, **kwargs)
+TrainerFactory = get_factory(sys.modules[__name__])

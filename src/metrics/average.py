@@ -13,7 +13,10 @@ class Average(object):
 
     @property
     def average(self):
-        return self.sum / self.count
+        if self.count == 0:
+            return float('inf')
+        else:
+            return self.sum / self.count
 
     def __str__(self):
         return '{:.6f}'.format(self.average)

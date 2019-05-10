@@ -3,30 +3,42 @@ import os
 import torch
 import torch.nn.functional as F
 
-from ..core.trainer import Trainer
 from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
 from ..models import ModelFactory
-from ..optimizers import OptimFactory, SchedulerFactory
+from ..optim import OptimFactory, SchedulerFactory
+from ..utils import get_logger
+from .trainer import AbstractTrainer
+
+LOGGER = get_logger(__name__)
 
 
-class ImageClassificationTrainer(Trainer):
+class ImageClassificationTrainer(AbstractTrainer):
 
-    def __init__(self, epochs: int, model: dict, optimizer: dict, dataset: dict,
-                 scheduler: dict, **kwargs):
-        super(ImageClassificationTrainer, self).__init__(**kwargs)
-        train_loader, test_loader = DatasetFactory.create(**dataset)
-        self.model = ModelFactory.create(**model).to(self.device)
-        self.optimizer = OptimFactory.create(self.model.parameters(),
-                                             **optimizer)
-        self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
-        self.train_loader = train_loader
-        self.test_loader = test_loader
+    def __init__(self, model: dict, optimizer: dict, dataset: dict, scheduler: dict, use_cuda: bool, epochs: int,
+                 output_dir: str):
+        self.model = None
+        self.optimizer = None
+        self.scheduler = None
+        self.train_loader = None
+        self.valid_loader = None
         self.epochs = epochs
-
-        self.checkpoint_path = os.path.join(self.output_dir, 'checkpoint.pth')
+        self.output_dir = output_dir
+        self.use_cuda = use_cuda
         self.start_epoch = 1
         self.best_acc = 0
+
+        self._prepare(model, optimizer, dataset, scheduler)
+
+    def _prepare(self, model, optimizer, dataset, scheduler):
+        self.model = ModelFactory.create(**model)
+        self.optimizer = OptimFactory.create(self.model.parameters(), **optimizer)
+        self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
+        self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
+
+        self.device = torch.device('cuda' if torch.cuda.is_available() and self.use_cuda else 'cpu')
+        self.model.to(self.device)
+        self.checkpoint_path = os.path.join(self.output_dir, 'checkpoint.pth')
 
     def run(self):
         os.makedirs(self.output_dir, exist_ok=True)
@@ -41,17 +53,14 @@ class ImageClassificationTrainer(Trainer):
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
-            test_loss, test_acc = self.test()
+            test_loss, test_acc = self.evaluate()
 
             if test_acc.accuracy > self.best_acc:
                 self.best_acc = test_acc.accuracy
                 self.save_checkpoint(epoch)
 
-            print(
-                'Training epoch: {}/{},'.format(epoch, self.epochs),
-                'train loss: {}, train acc: {},'.format(train_loss, train_acc),
-                'test loss: {}, test acc: {},'.format(test_loss, test_acc),
-                'best acc: {:.2f}%.'.format(self.best_acc * 100))
+            LOGGER.info('Epoch: %d/%d, train loss: %s, train acc: %s, test loss: %s, test acc: %s, best acc: %.2f.',
+                        epoch, self.epochs, train_loss, train_acc, test_loss, test_acc, self.best_acc * 100)
 
     def train(self):
         self.model.train()
@@ -77,7 +86,7 @@ class ImageClassificationTrainer(Trainer):
 
         return train_loss, train_acc
 
-    def test(self):
+    def evaluate(self):
         self.model.eval()
 
         test_loss = Average()
@@ -102,7 +111,7 @@ class ImageClassificationTrainer(Trainer):
         self.model.eval()
 
         checkpoint = {
-            'net': {k: v.cpu() for k, v in self.model.state_dict().items()},
+            'model': self.model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
             'epoch': epoch,
@@ -112,9 +121,9 @@ class ImageClassificationTrainer(Trainer):
         torch.save(checkpoint, self.checkpoint_path)
 
     def restore_checkpoint(self):
-        checkpoint = torch.load(self.checkpoint_path)
+        checkpoint = torch.load(self.checkpoint_path, map_location='cpu')
 
-        self.model.load_state_dict(checkpoint['net'])
+        self.model.load_state_dict(checkpoint['model'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.scheduler.load_state_dict(checkpoint['scheduler'])
 
