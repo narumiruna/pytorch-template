@@ -1,8 +1,13 @@
 # PyTorch Template
 
+## Training
 
-## Run
-
-```sh
+```shell
 $ python -u train.py -c configs/mnist.json -o outputs/mnist
+```
+
+## Unit testing
+
+```shell
+$ python -m unittest discover tests -v
 ```
