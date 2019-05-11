@@ -1,5 +1,14 @@
+from .datasets import DatasetFactory
+from .models import ModelFactory
+from .optim import OptimFactory, SchedulerFactory
 from .utils import load_json, save_json
 
+FACTORY_MAP = {
+    'data': DatasetFactory,
+    'model': ModelFactory,
+    'optim': OptimFactory,
+    'scheduler':SchedulerFactory,
+}
 
 class Config(object):
 
@@ -17,3 +26,8 @@ class Config(object):
 
     def keys(self):
         return self._data.keys()
+
+    def create(self, name, *args):
+        config = self[name]
+        factory = FACTORY_MAP.get(name)
+        return factory.create(*args, **config)
