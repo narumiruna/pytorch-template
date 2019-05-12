@@ -15,14 +15,14 @@ LOGGER = get_logger(__name__)
 
 class ClassificationTrainer(AbstractTrainer):
 
-    def __init__(self, model: dict, optimizer: dict, dataset: dict, scheduler: dict, use_cuda: bool, epochs: int,
+    def __init__(self, model: dict, optimizer: dict, dataset: dict, scheduler: dict, use_cuda: bool, num_epochs: int,
                  output_dir: str):
         self.model = None
         self.optimizer = None
         self.scheduler = None
         self.train_loader = None
         self.test_loader = None
-        self.epochs = epochs
+        self.num_epochs = num_epochs
         self.output_dir = output_dir
         self.use_cuda = use_cuda
         self.start_epoch = 1
@@ -40,16 +40,13 @@ class ClassificationTrainer(AbstractTrainer):
         self.model.to(self.device)
         self.checkpoint_path = os.path.join(self.output_dir, 'checkpoint.pth')
 
-    def run(self):
+    def fit(self):
         os.makedirs(self.output_dir, exist_ok=True)
 
         if os.path.exists(self.checkpoint_path):
             self.restore_checkpoint()
 
-        self.fit()
-
-    def fit(self):
-        for epoch in range(self.start_epoch, self.epochs + 1):
+        for epoch in range(self.start_epoch, self.num_epochs + 1):
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
@@ -59,8 +56,11 @@ class ClassificationTrainer(AbstractTrainer):
                 self.best_acc = test_acc.accuracy
                 self.save_checkpoint(epoch)
 
-            LOGGER.info('Epoch: %d/%d, train loss: %s, train acc: %s, test loss: %s, test acc: %s, best acc: %.2f.',
-                        epoch, self.epochs, train_loss, train_acc, test_loss, test_acc, self.best_acc * 100)
+            LOGGER.info(('Epoch: %d/%d, '
+                         'train loss: %s, train acc: %s, '
+                         'test loss: %s, test acc: %s, '
+                         'best test acc: %.2f%%.'),
+                        *(epoch, self.num_epochs, train_loss, train_acc, test_loss, test_acc, self.best_acc * 100))
 
     def train(self):
         self.model.train()

@@ -20,7 +20,7 @@ class MNISTDataloader(data.DataLoader):
         super(MNISTDataloader, self).__init__(dataset=dataset, batch_size=batch_size, shuffle=shuffle)
 
 
-def mnist(root='data', batch_size=128):
+def mnist_dataloaders(root='data', batch_size=128):
     train_loader = MNISTDataloader(root, train=True, batch_size=batch_size, shuffle=True)
     test_loader = MNISTDataloader(root, train=False, batch_size=batch_size, shuffle=False)
     return train_loader, test_loader

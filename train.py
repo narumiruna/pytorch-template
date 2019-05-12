@@ -11,11 +11,7 @@ from src.trainers import TrainerFactory
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.json')
-    parser.add_argument('-o', '--output-dir', type=str, default='outputs')
-    parser.add_argument('--no-cuda', action='store_true')
-    args = parser.parse_args()
-    args.use_cuda = not args.no_cuda
-    return args
+    return parser.parse_args()
 
 
 def set_random_seed(seed=0):
@@ -31,13 +27,10 @@ def main():
     set_random_seed()
 
     config = Config(args.config_file)
-    config['output_dir'] = args.output_dir
-    config['use_cuda'] = args.use_cuda
-    config.save(os.path.join(args.output_dir, 'training.json'))
+    config.save(os.path.join(config['output_dir'], 'training.json'))
 
     trainer = TrainerFactory.create(**config)
-    trainer.run()
-
+    trainer.fit()
 
 if __name__ == '__main__':
     main()

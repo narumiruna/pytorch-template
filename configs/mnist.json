@@ -1,6 +1,8 @@
 {
     "name": "ClassificationTrainer",
-    "epochs": 20,
+    "num_epochs": 20,
+    "use_cuda": true,
+    "output_dir": "outputs/default",
     "optimizer": {
         "name": "Adam",
         "lr": 1e-3
@@ -13,7 +15,7 @@
         "name": "LeNet"
     },
     "dataset": {
-        "name": "mnist",
+        "name": "mnist_dataloaders",
         "root": "data",
         "batch_size": 128
     }
