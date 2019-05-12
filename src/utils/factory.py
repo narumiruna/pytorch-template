@@ -1,5 +1,7 @@
 def get_factory(obj):
+
     class Factory(object):
+
         @staticmethod
         def create(*args, **kwargs):
             name = kwargs.pop('name')
