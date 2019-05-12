@@ -13,7 +13,7 @@ from .trainer import AbstractTrainer
 LOGGER = get_logger(__name__)
 
 
-class ImageClassificationTrainer(AbstractTrainer):
+class ClassificationTrainer(AbstractTrainer):
 
     def __init__(self, model: dict, optimizer: dict, dataset: dict, scheduler: dict, use_cuda: bool, epochs: int,
                  output_dir: str):
@@ -21,7 +21,7 @@ class ImageClassificationTrainer(AbstractTrainer):
         self.optimizer = None
         self.scheduler = None
         self.train_loader = None
-        self.valid_loader = None
+        self.test_loader = None
         self.epochs = epochs
         self.output_dir = output_dir
         self.use_cuda = use_cuda

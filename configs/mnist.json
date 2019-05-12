@@ -1,5 +1,5 @@
 {
-    "name": "ImageClassificationTrainer",
+    "name": "ClassificationTrainer",
     "epochs": 20,
     "optimizer": {
         "name": "Adam",

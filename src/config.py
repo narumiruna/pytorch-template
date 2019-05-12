@@ -28,6 +28,5 @@ class Config(object):
         return self._data.keys()
 
     def create(self, name, *args):
-        config = self[name]
         factory = FACTORY_MAP.get(name)
-        return factory.create(*args, **config)
+        return factory.create(*args, **self[name])
