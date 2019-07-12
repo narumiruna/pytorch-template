@@ -1,16 +1,14 @@
 from torch import nn
 
 
-class ConvBNReLUPool(nn.Sequential):
+class ConvBNReLU(nn.Sequential):
 
     def __init__(self, in_channels, out_channels, kernel_size):
-        layers = [
+        super(ConvBNReLU, self).__init__(
             nn.Conv2d(in_channels, out_channels, kernel_size, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, 2),
-        ]
-        super(ConvBNReLUPool, self).__init__(*layers)
+        )
 
 
 class LeNet(nn.Module):
@@ -18,8 +16,10 @@ class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
         self.features = nn.Sequential(
-            ConvBNReLUPool(1, 6, 5),
-            ConvBNReLUPool(6, 16, 5),
+            ConvBNReLU(1, 6, 5),
+            nn.MaxPool2d(2, 2),
+            ConvBNReLU(6, 16, 5),
+            nn.MaxPool2d(2, 2),
         )
 
         self.classifier = nn.Sequential(
