@@ -16,4 +16,5 @@ model:
 dataset:
   name: MNISTDataloader
   root: data
-  batch_size: 128
+  batch_size: 32
+  num_workers: 8

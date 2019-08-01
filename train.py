@@ -45,7 +45,6 @@ def main():
         train_loader,
         test_loader,
         device=device,
-        output_dir='outputs',
         **config['trainer'],
     )
 
