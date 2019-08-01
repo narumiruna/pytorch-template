@@ -48,6 +48,10 @@ def main():
         output_dir='outputs',
         **config['trainer'],
     )
+
+    if args.resume is not None:
+        trainer.resume(args.resume)
+
     trainer.fit()
 
 
