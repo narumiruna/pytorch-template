@@ -1,5 +1,6 @@
 import argparse
 
+import mlflow
 import numpy as np
 import torch
 
@@ -30,6 +31,7 @@ def main():
     manual_seed()
 
     config = Config.from_yaml(args.config_file)
+    mlflow.log_artifact(args.config_file)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     model = ModelFactory.create(**config['model']).to(device)
