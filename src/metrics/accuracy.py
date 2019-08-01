@@ -23,10 +23,10 @@ class Accuracy(object):
 
     def __lt__(self, other):
         if isinstance(other, Accuracy):
-            other = other.accuracy
+            other = other.value
         return self.value < other
 
     def __gt__(self, other):
         if isinstance(other, Accuracy):
-            other = other.accuracy
+            other = other.value
         return self.value > other
