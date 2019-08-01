@@ -1,4 +1,4 @@
-from .utils import load_json, load_yaml, save_json, save_yaml
+from .utils import load_yaml, save_yaml
 
 
 class Config(object):
@@ -6,10 +6,6 @@ class Config(object):
     @classmethod
     def from_yaml(cls, f):
         return cls(load_yaml(f))
-
-    @classmethod
-    def from_args(cls, args):
-        return cls(load_json(args.config_file))
 
     def __init__(self, data=None):
         self._data = data or {}
@@ -21,7 +17,7 @@ class Config(object):
         self._data[key] = value
 
     def save(self, f: str):
-        save_json(self._data, f, indent=4)
+        save_yaml(self._data, f)
 
     def keys(self):
         return self._data.keys()
