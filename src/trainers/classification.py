@@ -1,8 +1,6 @@
 import mlflow
 import torch
 import torch.nn.functional as F
-from torch import nn, optim
-from torch.utils import data
 from tqdm import tqdm, trange
 
 from ..metrics import Accuracy, Average
@@ -14,15 +12,13 @@ LOGGER = get_logger(__name__)
 
 class ClassificationTrainer(AbstractTrainer):
 
-    def __init__(self, model: nn.Module, optimizer: optim.Optimizer, scheduler, train_loader: data.DataLoader,
-                 test_loader: data.DataLoader, num_epochs: int, output_dir: str, device):
+    def __init__(self, model, optimizer, scheduler, train_loader, test_loader, num_epochs, device):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.num_epochs = num_epochs
-        self.output_dir = output_dir
         self.device = device
 
         self.epoch = 1
