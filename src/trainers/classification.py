@@ -2,11 +2,10 @@ import os
 
 import torch
 import torch.nn.functional as F
+from torch import nn, optim
+from torch.utils import data
 
-from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
-from ..models import ModelFactory
-from ..optim import OptimFactory, SchedulerFactory
 from ..utils import get_logger
 from .trainer import AbstractTrainer
 
@@ -15,52 +14,36 @@ LOGGER = get_logger(__name__)
 
 class ClassificationTrainer(AbstractTrainer):
 
-    def __init__(self, model: dict, optimizer: dict, dataset: dict, scheduler: dict, use_cuda: bool, num_epochs: int,
-                 output_dir: str):
-        self.model = None
-        self.optimizer = None
-        self.scheduler = None
-        self.train_loader = None
-        self.test_loader = None
+    def __init__(self, model: nn.Module, optimizer: optim.Optimizer, scheduler, train_loader: data.DataLoader,
+                 test_loader: data.DataLoader, num_epochs: int, output_dir: str, device):
+        self.model = model
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self.train_loader = train_loader
+        self.test_loader = test_loader
         self.num_epochs = num_epochs
         self.output_dir = output_dir
-        self.use_cuda = use_cuda
-        self.start_epoch = 1
+        self.device = device
+
+        self.epoch = 1
         self.best_acc = 0
 
-        self._prepare(model, optimizer, dataset, scheduler)
-
-    def _prepare(self, model, optimizer, dataset, scheduler):
-        self.model = ModelFactory.create(**model)
-        self.optimizer = OptimFactory.create(self.model.parameters(), **optimizer)
-        self.train_loader, self.test_loader = DatasetFactory.create(**dataset)
-        self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
-
-        self.device = torch.device('cuda' if torch.cuda.is_available() and self.use_cuda else 'cpu')
-        self.model.to(self.device)
-        self.checkpoint_path = os.path.join(self.output_dir, 'checkpoint.pth')
-
     def fit(self):
-        os.makedirs(self.output_dir, exist_ok=True)
-
-        if os.path.exists(self.checkpoint_path):
-            self.restore_checkpoint()
-
-        for epoch in range(self.start_epoch, self.num_epochs + 1):
+        for self.epoch in range(self.epoch, self.num_epochs + 1):
             self.scheduler.step()
 
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.evaluate()
 
-            if test_acc.accuracy > self.best_acc:
-                self.best_acc = test_acc.accuracy
-                self.save_checkpoint(epoch)
+            if test_acc > self.best_acc:
+                self.best_acc = test_acc
+                self.save_checkpoint()
 
-            LOGGER.info(('Epoch: %d/%d, '
-                         'train loss: %s, train acc: %s, '
-                         'test loss: %s, test acc: %s, '
-                         'best test acc: %.2f%%.'),
-                        *(epoch, self.num_epochs, train_loss, train_acc, test_loss, test_acc, self.best_acc * 100))
+            format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
+            format_string += 'train loss: {}, train acc: {}, '.format(train_loss, train_acc)
+            format_string += 'test loss: {}, test acc: {}, '.format(test_loss, test_acc)
+            format_string += 'best test acc: {}.'.format(self.best_acc)
+            LOGGER.info(format_string)
 
     def train(self):
         self.model.train()
@@ -79,10 +62,8 @@ class ClassificationTrainer(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
 
-            pred = output.argmax(dim=1)
-
             train_loss.update(loss.item(), number=x.size(0))
-            train_acc.update(pred, y)
+            train_acc.update(output, y)
 
         return train_loss, train_acc
 
@@ -100,32 +81,31 @@ class ClassificationTrainer(AbstractTrainer):
                 output = self.model(x)
                 loss = F.cross_entropy(output, y)
 
-                pred = output.argmax(dim=1)
-
                 test_loss.update(loss.item(), number=x.size(0))
-                test_acc.update(pred, y)
+                test_acc.update(output, y)
 
         return test_loss, test_acc
 
-    def save_checkpoint(self, epoch):
+    def save_checkpoint(self):
         self.model.eval()
 
         checkpoint = {
             'model': self.model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
-            'epoch': epoch,
+            'epoch': self.epoch,
             'best_acc': self.best_acc
         }
 
-        torch.save(checkpoint, self.checkpoint_path)
+        f = os.path.join(self.output_dir, 'checkpoint.pth')
+        os.makedirs(self.output_dir, exist_ok=True)
+        torch.save(checkpoint, f)
 
-    def restore_checkpoint(self):
-        checkpoint = torch.load(self.checkpoint_path, map_location='cpu')
+    def resume(self, f):
+        checkpoint = torch.load(f, map_location='cpu')
 
         self.model.load_state_dict(checkpoint['model'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.scheduler.load_state_dict(checkpoint['scheduler'])
-
-        self.start_epoch = checkpoint['epoch'] + 1
+        self.epoch = checkpoint['epoch'] + 1
         self.best_acc = checkpoint['best_acc']

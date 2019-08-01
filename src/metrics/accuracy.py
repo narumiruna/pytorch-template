@@ -9,15 +9,24 @@ class Accuracy(object):
         self.correct = 0
         self.count = 0
 
-    def update(self, pred: torch.Tensor, true: torch.Tensor):
-        assert pred.size(0) == true.size(0)
-
-        self.correct += pred.data.eq(true.data).sum().item()
-        self.count += pred.size(0)
+    def update(self, output: torch.Tensor, target: torch.Tensor):
+        with torch.no_grad():
+            self.correct += output.argmax(dim=1).eq(target).sum().item()
+            self.count += target.size(0)
 
     @property
-    def accuracy(self):
+    def value(self):
         return self.correct / self.count
 
     def __str__(self):
-        return '{:.2f}%'.format(self.accuracy * 100)
+        return '{:.2f}%'.format(self.value * 100)
+
+    def __lt__(self, other):
+        if isinstance(other, Accuracy):
+            other = other.accuracy
+        return self.value < other
+
+    def __gt__(self, other):
+        if isinstance(other, Accuracy):
+            other = other.accuracy
+        return self.value > other

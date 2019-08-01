@@ -1,10 +1,18 @@
-from .utils import load_json, save_json
+from .utils import load_json, load_yaml, save_json, save_yaml
 
 
 class Config(object):
 
-    def __init__(self, f: str):
-        self._data = load_json(f)
+    @classmethod
+    def from_yaml(cls, f):
+        return cls(load_yaml(f))
+
+    @classmethod
+    def from_args(cls, args):
+        return cls(load_json(args.config_file))
+
+    def __init__(self, data=None):
+        self._data = data or {}
 
     def __getitem__(self, key):
         return self._data[key]
