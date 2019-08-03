@@ -1,5 +1,6 @@
 import argparse
 
+import mlflow
 import numpy as np
 import torch
 
@@ -30,6 +31,11 @@ def main():
     manual_seed()
 
     config = Config.from_yaml(args.config_file)
+
+    mlflow.log_param('num_epochs', config.trainer.num_epochs)
+    mlflow.log_param('lr', config.optimizer.lr)
+    mlflow.log_param('batch_size', config.dataset.batch_size)
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     model = ModelFactory.create(**config['model']).to(device)
