@@ -27,8 +27,12 @@ class ClassificationTrainer(AbstractTrainer):
     def fit(self):
         for self.epoch in trange(self.epoch, self.num_epochs + 1):
             self.scheduler.step()
-            self.train()
-            self.evaluate()
+
+            train_metrics = self.train()
+            test_metrics = self.evaluate()
+
+            mlflow.log_metrics(train_metrics, step=self.epoch)
+            mlflow.log_metrics(test_metrics, step=self.epoch)
 
     def train(self):
         self.model.train()
@@ -50,8 +54,10 @@ class ClassificationTrainer(AbstractTrainer):
             train_loss.update(loss.item(), number=x.size(0))
             train_acc.update(output, y)
 
-        mlflow.log_metric('train loss', train_loss.value, step=self.epoch)
-        mlflow.log_metric('train acc', train_acc.value, step=self.epoch)
+        return {
+            'train_loss': train_loss.value,
+            'train_acc': train_acc.value,
+        }
 
     def evaluate(self):
         self.model.eval()
@@ -74,8 +80,10 @@ class ClassificationTrainer(AbstractTrainer):
             self.best_acc = test_acc
             self.save_checkpoint()
 
-        mlflow.log_metric('test loss', test_loss.value, step=self.epoch)
-        mlflow.log_metric('test acc', test_acc.value, step=self.epoch)
+        return {
+            'test_loss': test_loss.value,
+            'test_acc': test_acc.value,
+        }
 
     def save_checkpoint(self):
         self.model.eval()
