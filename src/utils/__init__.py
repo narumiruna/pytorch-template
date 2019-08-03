@@ -1,3 +1,4 @@
+from .collections import AttrDict
 from .factory import get_factory
 from .log import get_logger
 from .timing import timeit

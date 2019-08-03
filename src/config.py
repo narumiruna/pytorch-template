@@ -1,9 +1,9 @@
 import mlflow
 
-from .utils import load_yaml, save_yaml
+from .utils import AttrDict, load_yaml, save_yaml
 
 
-class Config(dict):
+class Config(AttrDict):
 
     @classmethod
     def from_yaml(cls, f):
