@@ -12,7 +12,7 @@ LOGGER = get_logger(__name__)
 
 class ClassificationTrainer(AbstractTrainer):
 
-    def __init__(self, model, optimizer, scheduler, train_loader, test_loader, num_epochs, device):
+    def __init__(self, model, optimizer, scheduler, train_loader, test_loader, device, num_epochs):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
