@@ -23,10 +23,12 @@ def manual_seed(seed=0):
     torch.manual_seed(seed)
     np.random.seed(seed)
 
+
 def log_params(config):
     mlflow.log_param('num_epochs', config.trainer.num_epochs)
     mlflow.log_param('lr', config.optimizer.lr)
     mlflow.log_param('batch_size', config.dataset.batch_size)
+
 
 def main():
     args = parse_args()
@@ -46,22 +48,12 @@ def main():
     train_loader = DatasetFactory.create(train=True, **config.dataset)
     test_loader = DatasetFactory.create(train=False, **config.dataset)
 
-    trainer = TrainerFactory.create(
-        model,
-        optimizer,
-        scheduler,
-        train_loader,
-        test_loader,
-        device=device,
-        **config.trainer,
-    )
+    trainer = TrainerFactory.create(model, optimizer, scheduler, train_loader, test_loader, device, **config.trainer)
 
     if args.resume is not None:
         trainer.resume(args.resume)
 
     trainer.fit()
-
-
 
 
 if __name__ == '__main__':
