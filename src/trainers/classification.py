@@ -17,12 +17,12 @@ class ClassificationTrainer(AbstractTrainer):
 
     @classmethod
     def from_config(cls, model, optimizer, scheduler, dataset, num_epochs):
-            
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         mlflow.log_param('num_epochs', num_epochs)
         mlflow.log_param('lr', optimizer.lr)
         mlflow.log_param('batch_size', dataset.batch_size)
 
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = ModelFactory.create(**model).to(device)
         optimizer = OptimFactory.create(model.parameters(), **optimizer)
         scheduler = SchedulerFactory.create(optimizer, **scheduler)
@@ -47,11 +47,22 @@ class ClassificationTrainer(AbstractTrainer):
         for self.epoch in trange(self.epoch, self.num_epochs + 1):
             self.scheduler.step()
 
-            train_metrics = self.train()
-            test_metrics = self.evaluate()
+            train_loss, train_acc = self.train()
+            test_loss, test_acc = self.evaluate()
 
-            mlflow.log_metrics(train_metrics, step=self.epoch)
-            mlflow.log_metrics(test_metrics, step=self.epoch)
+            metrics = dict(
+                train_loss=train_loss.value,
+                train_acc=train_acc.value,
+                test_loss=test_loss.value,
+                test_acc=test_acc.value,
+            )
+            mlflow.log_metrics(metrics, step=self.epoch)
+
+            format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
+            format_string += 'train loss: {}, train acc: {}, '.format(train_loss, train_acc)
+            format_string += 'test loss: {}, test acc: {}, '.format(test_loss, test_acc)
+            format_string += 'best test acc: {}.'.format(self.best_acc)
+            tqdm.write(format_string)
 
     def train(self):
         self.model.train()
@@ -73,10 +84,7 @@ class ClassificationTrainer(AbstractTrainer):
             train_loss.update(loss.item(), number=x.size(0))
             train_acc.update(output, y)
 
-        return {
-            'train_loss': train_loss.value,
-            'train_acc': train_acc.value,
-        }
+        return train_loss, train_acc
 
     def evaluate(self):
         self.model.eval()
@@ -99,10 +107,7 @@ class ClassificationTrainer(AbstractTrainer):
             self.best_acc = test_acc
             self.save_checkpoint()
 
-        return {
-            'test_loss': test_loss.value,
-            'test_acc': test_acc.value,
-        }
+        return test_loss, test_acc
 
     def save_checkpoint(self):
         self.model.eval()
