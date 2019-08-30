@@ -3,7 +3,10 @@ import torch
 import torch.nn.functional as F
 from tqdm import tqdm, trange
 
+from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
+from ..models import ModelFactory
+from ..optim import OptimFactory, SchedulerFactory
 from ..utils import get_logger
 from .trainer import AbstractTrainer
 
@@ -11,6 +14,22 @@ LOGGER = get_logger(__name__)
 
 
 class ClassificationTrainer(AbstractTrainer):
+
+    @classmethod
+    def from_config(cls, model, optimizer, scheduler, dataset, num_epochs):
+            
+        mlflow.log_param('num_epochs', num_epochs)
+        mlflow.log_param('lr', optimizer.lr)
+        mlflow.log_param('batch_size', dataset.batch_size)
+
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = ModelFactory.create(**model).to(device)
+        optimizer = OptimFactory.create(model.parameters(), **optimizer)
+        scheduler = SchedulerFactory.create(optimizer, **scheduler)
+        train_loader = DatasetFactory.create(train=True, **dataset)
+        test_loader = DatasetFactory.create(train=False, **dataset)
+
+        return cls(model, optimizer, scheduler, train_loader, test_loader, device, num_epochs)
 
     def __init__(self, model, optimizer, scheduler, train_loader, test_loader, device, num_epochs):
         self.model = model

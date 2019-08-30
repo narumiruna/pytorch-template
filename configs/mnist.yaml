@@ -1,6 +1,5 @@
-trainer:
-  name: ClassificationTrainer
-  num_epochs: 20
+name: ClassificationTrainer
+num_epochs: 20
 
 optimizer:
   name: Adam

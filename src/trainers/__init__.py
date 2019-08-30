@@ -3,4 +3,10 @@ import sys
 from ..utils import get_factory
 from .classification import ClassificationTrainer
 
-TrainerFactory = get_factory(sys.modules[__name__])
+
+class TrainerFactory(object):
+
+    @staticmethod
+    def create(*args, **kwargs):
+        name = kwargs.pop('name')
+        return getattr(sys.modules[__name__], name).from_config(*args, **kwargs)
