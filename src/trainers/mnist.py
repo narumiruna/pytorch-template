@@ -28,10 +28,10 @@ class MNISTTrainer(Trainer):
 
     def fit(self):
         for self.epoch in trange(self.epoch, self.num_epochs + 1):
-            self.scheduler.step()
-
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.evaluate()
+
+            self.scheduler.step()
 
             metrics = dict(
                 train_loss=train_loss.value,
