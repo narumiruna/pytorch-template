@@ -1,3 +1,4 @@
+import gin
 from torch import nn
 
 
@@ -11,6 +12,7 @@ class ConvBNReLU(nn.Sequential):
         )
 
 
+@gin.configurable
 class LeNet(nn.Module):
 
     def __init__(self):

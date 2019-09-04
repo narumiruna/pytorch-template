@@ -1,40 +1,24 @@
+import gin
 import mlflow
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm, trange
 
-from ..datasets import DatasetFactory
 from ..metrics import Accuracy, Average
-from ..models import ModelFactory
-from ..optim import OptimFactory, SchedulerFactory
 from ..utils import get_logger
-from .trainer import AbstractTrainer
+from .trainer import Trainer
 
 LOGGER = get_logger(__name__)
 
 
-class ClassificationTrainer(AbstractTrainer):
+@gin.configurable
+class MNISTTrainer(Trainer):
 
-    @classmethod
-    def from_config(cls, model, optimizer, scheduler, dataset, num_epochs):
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-        mlflow.log_param('num_epochs', num_epochs)
-        mlflow.log_param('lr', optimizer.lr)
-        mlflow.log_param('batch_size', dataset.batch_size)
-
-        model = ModelFactory.create(**model).to(device)
-        optimizer = OptimFactory.create(model.parameters(), **optimizer)
-        scheduler = SchedulerFactory.create(optimizer, **scheduler)
-        train_loader = DatasetFactory.create(train=True, **dataset)
-        test_loader = DatasetFactory.create(train=False, **dataset)
-
-        return cls(model, optimizer, scheduler, train_loader, test_loader, device, num_epochs)
-
-    def __init__(self, model, optimizer, scheduler, train_loader, test_loader, device, num_epochs):
-        self.model = model
-        self.optimizer = optimizer
-        self.scheduler = scheduler
+    def __init__(self, model_cls, optimizer_cls, scheduler_cls, train_loader, test_loader, num_epochs):
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = model_cls().to(device)
+        self.optimizer = optimizer_cls(self.model.parameters())
+        self.scheduler = scheduler_cls(self.optimizer)
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.num_epochs = num_epochs

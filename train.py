@@ -1,10 +1,10 @@
 import argparse
 
+import gin
 import numpy as np
 import torch
 
-from src.config import Config
-from src.trainers import TrainerFactory
+import src
 
 
 def parse_args():
@@ -20,20 +20,20 @@ def manual_seed(seed=0):
     np.random.seed(seed)
 
 
+@gin.configurable
+def train(trainer):
+    trainer.fit()
+
+
 def main():
     args = parse_args()
 
     torch.backends.cudnn.benchmark = True
     manual_seed()
 
-    config = Config.from_yaml(args.config_file)
+    gin.parse_config_file('config.gin')
 
-    trainer = TrainerFactory.create(**config)
-
-    if args.resume is not None:
-        trainer.resume(args.resume)
-
-    trainer.fit()
+    train()
 
 
 if __name__ == '__main__':

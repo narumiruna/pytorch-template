@@ -1,6 +1,7 @@
+import gin
 from torch import optim
 
-from .utils import get_factory
+gin.external_configurable(optim.Adam, module='Adam')
+gin.external_configurable(optim.SGD, module='SGD')
 
-OptimFactory = get_factory(optim)
-SchedulerFactory = get_factory(optim.lr_scheduler)
+gin.external_configurable(optim.lr_scheduler.StepLR, module='StepLr')

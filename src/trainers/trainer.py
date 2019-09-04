@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
 
-class AbstractTrainer(metaclass=ABCMeta):
+class Trainer(metaclass=ABCMeta):
+
     @abstractmethod
     def fit(self):
         raise NotImplementedError
