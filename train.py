@@ -10,43 +10,28 @@ import src
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.yaml')
+    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.gin')
     parser.add_argument('-r', '--resume', type=str, default=None)
     return parser.parse_args()
 
 
-def manual_seed(seed=0):
-    """https://pytorch.org/docs/stable/notes/randomness.html"""
-    torch.manual_seed(seed)
-    np.random.seed(seed)
-
-
 @gin.configurable
-def train(trainer):
+def train(trainer, resume=None):
+    if resume is not None:
+        trainer.resume(resume)
+
     trainer.fit()
-
-
-def log_params():
-    for (scope, name), arguments in gin.config._CONFIG.items():
-        for param, value in arguments.items():
-            if scope:
-                key = '{}/{}.{}'.format(scope, name, param)
-            else:
-                key = '{}.{}'.format(name, param)
-
-            mlflow.log_param(key, value)
 
 
 def main():
     args = parse_args()
+    gin.parse_config_file(args.config_file)
 
     torch.backends.cudnn.benchmark = True
-    manual_seed()
+    src.utils.manual_seed()
+    src.utils.log_params()
 
-    gin.parse_config_file('configs/mnist.gin')
-    log_params()
-
-    train()
+    train(resume=args.resume)
 
 
 if __name__ == '__main__':
