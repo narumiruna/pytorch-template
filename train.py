@@ -26,6 +26,17 @@ def train(trainer):
     trainer.fit()
 
 
+def log_params():
+    for (scope, name), arguments in gin.config._CONFIG.items():
+        for param, value in arguments.items():
+            if scope:
+                key = '{}/{}.{}'.format(scope, name, param)
+            else:
+                key = '{}.{}'.format(name, param)
+
+            mlflow.log_param(key, value)
+
+
 def main():
     args = parse_args()
 
@@ -33,7 +44,7 @@ def main():
     manual_seed()
 
     gin.parse_config_file('configs/mnist.gin')
-    print(gin.config.config_str())
+    log_params()
 
     train()
 
