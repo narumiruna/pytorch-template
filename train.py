@@ -31,7 +31,7 @@ def main():
     torch.backends.cudnn.benchmark = True
     manual_seed()
 
-    gin.parse_config_file('config.gin')
+    gin.parse_config_file('configs/mnist.gin')
 
     train()
 
