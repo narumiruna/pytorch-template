@@ -16,13 +16,12 @@ class MNISTTrainer(Trainer):
 
     def __init__(self, model_cls, optimizer_cls, scheduler_cls, train_loader, test_loader, num_epochs):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model = model_cls().to(device)
+        self.model = model_cls().to(self.device)
         self.optimizer = optimizer_cls(self.model.parameters())
         self.scheduler = scheduler_cls(self.optimizer)
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.num_epochs = num_epochs
-        self.device = device
 
         self.epoch = 1
         self.best_acc = 0

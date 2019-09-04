@@ -1,6 +1,7 @@
 import argparse
 
 import gin
+import mlflow
 import numpy as np
 import torch
 
@@ -32,6 +33,7 @@ def main():
     manual_seed()
 
     gin.parse_config_file('configs/mnist.gin')
+    print(gin.config.config_str())
 
     train()
 
