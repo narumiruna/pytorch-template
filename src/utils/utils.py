@@ -1,8 +1,6 @@
 import json
 import os
 
-import gin
-import mlflow
 import numpy as np
 import torch
 import yaml
@@ -31,17 +29,6 @@ def load_yaml(f):
 def save_yaml(data, f, **kwargs):
     with open(f, 'w') as fp:
         yaml.safe_dump(data, fp, **kwargs)
-
-
-def log_params():
-    for (scope, name), arguments in gin.config._CONFIG.items():
-        for param, value in arguments.items():
-            if scope:
-                key = '{}/{}.{}'.format(scope, name, param)
-            else:
-                key = '{}.{}'.format(name, param)
-
-            mlflow.log_param(key, value)
 
 
 def manual_seed(seed=0):

@@ -1,10 +1,14 @@
+BATCH_SIZE = 32
+LEARNING_RATE = 1e-3
+WEIGHT_DECAY = 1e-4
+
 MNISTDataloader.root = 'data'
-MNISTDataloader.batch_size = 32
+MNISTDataloader.batch_size = %BATCH_SIZE
 train/MNISTDataloader.train = True
 test/MNISTDataloader.train = False
 
-Adam.lr = 1e-3
-Adam.weight_decay = 1e-4
+Adam.lr = %LEARNING_RATE
+Adam.weight_decay = %WEIGHT_DECAY
 
 StepLR.step_size = 10
 StepLR.gamma = 0.1
@@ -17,3 +21,7 @@ MNISTTrainer.test_loader = @test/MNISTDataloader()
 MNISTTrainer.num_epochs = 40
 
 train.trainer = @MNISTTrainer()
+
+log_params.learning_rate = %LEARNING_RATE
+log_params.batch_size = %BATCH_SIZE
+log_params.weight_decay = %WEIGHT_DECAY

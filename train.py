@@ -1,6 +1,7 @@
 import argparse
 
 import gin
+import mlflow
 import torch
 
 import src
@@ -21,13 +22,18 @@ def train(trainer, resume=None):
     trainer.fit()
 
 
+@gin.configurable
+def log_params(**params):
+    mlflow.log_params(params)
+
+
 def main():
     args = parse_args()
     gin.parse_config_file(args.config_file)
 
     torch.backends.cudnn.benchmark = True
     src.utils.manual_seed()
-    src.utils.log_params()
+    log_params()
 
     train(resume=args.resume)
 
