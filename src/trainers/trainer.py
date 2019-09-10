@@ -44,6 +44,8 @@ class Trainer(AbstractTrainer):
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
+            self.save_checkpoint('checkpoint.pth')
+
             format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
             format_string += 'train loss: {}, train acc: {}, '.format(train_loss, train_acc)
             format_string += 'test loss: {}, test acc: {}, '.format(test_loss, test_acc)
@@ -91,11 +93,11 @@ class Trainer(AbstractTrainer):
 
         if test_acc > self.best_acc:
             self.best_acc = test_acc
-            self.save_checkpoint()
+            self.save_checkpoint('best.pth')
 
         return test_loss, test_acc
 
-    def save_checkpoint(self):
+    def save_checkpoint(self, f):
         self.model.eval()
 
         checkpoint = {
@@ -106,7 +108,6 @@ class Trainer(AbstractTrainer):
             'best_acc': self.best_acc
         }
 
-        f = 'checkpoint.pth'
         torch.save(checkpoint, f)
 
     def resume(self, f):

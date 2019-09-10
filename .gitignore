@@ -179,5 +179,4 @@ dmypy.json
 
 .vscode/
 data/
-mlruns/
-checkpoint.pth
+*.pth
