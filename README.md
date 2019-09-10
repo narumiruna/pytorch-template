@@ -3,7 +3,7 @@
 ## Training
 
 ```shell
-$ python -u train.py -c configs/mnist.json -o outputs/mnist
+$ python -u train.py -c configs/mnist.json
 ```
 
 ## Unit testing
