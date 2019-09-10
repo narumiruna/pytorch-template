@@ -1,14 +1,51 @@
-import mlflow
-
-from .utils import AttrDict, load_yaml, save_yaml
+from .utils import load_json
 
 
-class Config(AttrDict):
+class AttrDict(dict):
+    IMMUTABLE = '__immutable__'
 
-    @classmethod
-    def from_yaml(cls, f):
-        mlflow.log_artifact(f)
-        return cls(load_yaml(f))
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        for key, value in self.items():
+            if isinstance(value, dict):
+                self[key] = AttrDict(value)
 
-    def save(self, f: str):
-        save_yaml(self, f)
+        self.__dict__[AttrDict.IMMUTABLE] = False
+
+    def __getattr__(self, key):
+        if key in self.__dict__:
+            return self.__dict__[key]
+        elif key in self:
+            return self[key]
+        else:
+            raise AttributeError(key)
+
+    def __setattr__(self, key, value):
+        if self.__dict__[AttrDict.IMMUTABLE]:
+            raise AttributeError('Attempted to set "{}" to "{}", but AttrDict is immutable'.format(key, value))
+
+        if isinstance(value, dict):
+            value = AttrDict(value)
+
+        if key in self.__dict__:
+            self.__dict__[key] = value
+        else:
+            self[key] = value
+
+    def set_immutable(self):
+        self.__dict__[AttrDict.IMMUTABLE] = True
+
+        for value in self.__dict__.values():
+            if isinstance(value, AttrDict):
+                value.set_immutable()
+
+        for value in self.values():
+            if isinstance(value, AttrDict):
+                value.set_immutable()
+
+    def is_immutable(self):
+        return self.__dict__[AttrDict.IMMUTABLE]
+
+
+def load_config(f):
+    return AttrDict(load_json(f))

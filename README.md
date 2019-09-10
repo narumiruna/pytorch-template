@@ -3,17 +3,11 @@
 ## Training
 
 ```shell
-$ python -u train.py -c configs/mnist.json -o outputs/mnist
+$ python -u train.py -c configs/mnist.json
 ```
 
 ## Unit testing
 
 ```shell
 $ python -m unittest discover tests -v
-```
-
-## MLflow
-
-```shell
-$ mlflow ui
 ```

@@ -1,8 +1,6 @@
 import json
 import os
 
-import yaml
-
 
 def load_json(f):
     data = None
@@ -17,13 +15,13 @@ def save_json(data, f, **kwargs):
         json.dump(data, fp, **kwargs)
 
 
-def load_yaml(f):
-    data = None
-    with open(f, 'r') as fp:
-        data = yaml.safe_load(fp)
-    return data
+def get_factory(obj):
 
+    class Factory(object):
 
-def save_yaml(data, f, **kwargs):
-    with open(f, 'w') as fp:
-        yaml.safe_dump(data, fp, **kwargs)
+        @staticmethod
+        def create(*args, **kwargs):
+            name = kwargs.pop('name')
+            return getattr(obj, name)(*args, **kwargs)
+
+    return Factory

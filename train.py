@@ -3,13 +3,13 @@ import argparse
 import numpy as np
 import torch
 
-from src.config import Config
+from src.config import load_config
 from src.trainers import TrainerFactory
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.yaml')
+    parser.add_argument('-c', '--config', type=str, default='configs/mnist.json')
     parser.add_argument('-r', '--resume', type=str, default=None)
     return parser.parse_args()
 
@@ -23,10 +23,9 @@ def manual_seed(seed=0):
 def main():
     args = parse_args()
 
-    torch.backends.cudnn.benchmark = True
     manual_seed()
 
-    config = Config.from_yaml(args.config_file)
+    config = load_config(args.config)
 
     trainer = TrainerFactory.create(**config)
 
