@@ -1,5 +1,4 @@
+torch>=1.2.0
+torchvision>=0.4.0
+mlconfig
 mlflow
-pyyaml
-torch>=0.4.1
-torchvision>=0.2.1
-tqdm

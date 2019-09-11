@@ -178,6 +178,6 @@ dmypy.json
 ##################################################
 
 .vscode/
+*.pth
 data/
 mlruns/
-checkpoint.pth

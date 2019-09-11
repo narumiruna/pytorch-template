@@ -1,7 +1,9 @@
+import mlconfig
 from torch.utils import data
 from torchvision import datasets, transforms
 
 
+@mlconfig.register
 class MNISTDataloader(data.DataLoader):
 
     def __init__(self, root: str, train: bool, batch_size: int, **kwargs):

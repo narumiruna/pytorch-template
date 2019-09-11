@@ -1,6 +1,6 @@
+import mlconfig
 from torch import optim
 
-from .utils import get_factory
+mlconfig.register(optim.Adam)
 
-OptimFactory = get_factory(optim)
-SchedulerFactory = get_factory(optim.lr_scheduler)
+mlconfig.register(optim.lr_scheduler.StepLR)
