@@ -1,6 +1,7 @@
 import argparse
 
 import mlconfig
+import mlflow
 import numpy as np
 import torch
 
@@ -23,6 +24,8 @@ def manual_seed(seed=0):
 def main():
     args = parse_args()
     config = mlconfig.load(args.config)
+    mlflow.log_artifact(args.config)
+    mlflow.log_params(config.flat())
 
     manual_seed()
 

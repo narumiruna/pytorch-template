@@ -1,8 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
 import mlconfig
+import mlflow
 import torch
 import torch.nn.functional as F
+from tqdm import tqdm, trange
 
 from ..metrics import Accuracy, Average
 
@@ -38,18 +40,24 @@ class Trainer(AbstractTrainer):
         self.best_acc = 0
 
     def fit(self):
-        for self.epoch in range(self.epoch, self.num_epochs + 1):
+        for self.epoch in trange(self.epoch, self.num_epochs + 1):
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
             self.save_checkpoint('checkpoint.pth')
 
+            metrics = dict(train_loss=train_loss.value,
+                           train_acc=train_acc.value,
+                           test_loss=test_loss.value,
+                           test_acc=test_acc.value)
+            mlflow.log_metrics(metrics, step=self.epoch)
+
             format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
             format_string += 'train loss: {}, train acc: {}, '.format(train_loss, train_acc)
             format_string += 'test loss: {}, test acc: {}, '.format(test_loss, test_acc)
             format_string += 'best test acc: {}.'.format(self.best_acc)
-            print(format_string)
+            tqdm.write(format_string)
 
     def train(self):
         self.model.train()
@@ -57,7 +65,7 @@ class Trainer(AbstractTrainer):
         train_loss = Average()
         train_acc = Accuracy()
 
-        for x, y in self.train_loader:
+        for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
             y = y.to(self.device)
 
@@ -80,7 +88,7 @@ class Trainer(AbstractTrainer):
         test_acc = Accuracy()
 
         with torch.no_grad():
-            for x, y in self.test_loader:
+            for x, y in tqdm(self.test_loader):
                 x = x.to(self.device)
                 y = y.to(self.device)
 
@@ -108,6 +116,7 @@ class Trainer(AbstractTrainer):
         }
 
         torch.save(checkpoint, f)
+        mlflow.log_artifact(f)
 
     def resume(self, f):
         checkpoint = torch.load(f, map_location=self.device)
