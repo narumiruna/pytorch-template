@@ -13,7 +13,7 @@ model:
 
 optimizer:
   name: Adam
-  lr: 0.001
+  lr: 1.e-3
 
 scheduler:
   name: StepLR
