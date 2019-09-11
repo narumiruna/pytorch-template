@@ -14,13 +14,13 @@ LOGGER = get_logger(__name__)
 @gin.configurable
 class MNISTTrainer(Trainer):
 
-    def __init__(self, model_cls, optimizer_cls, scheduler_cls, train_loader, test_loader, num_epochs):
+    def __init__(self, model_cls, optimizer_cls, scheduler_cls, dataloader_cls, num_epochs):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = model_cls().to(self.device)
         self.optimizer = optimizer_cls(self.model.parameters())
         self.scheduler = scheduler_cls(self.optimizer)
-        self.train_loader = train_loader
-        self.test_loader = test_loader
+        self.train_loader = dataloader_cls(train=True)
+        self.test_loader = dataloader_cls(train=False)
         self.num_epochs = num_epochs
 
         self.epoch = 1

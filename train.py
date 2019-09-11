@@ -9,7 +9,7 @@ import src
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.gin')
+    parser.add_argument('-c', '--config-file', type=str, default='configs/mnist.ini')
     parser.add_argument('-r', '--resume', type=str, default=None)
     return parser.parse_args()
 
@@ -25,7 +25,6 @@ def train(trainer, resume=None):
 @gin.configurable
 def log_params(**params):
     mlflow.log_params(params)
-
 
 def main():
     args = parse_args()
