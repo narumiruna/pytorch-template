@@ -1,12 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
+import mlconfig
 import torch
 import torch.nn.functional as F
 
-from ..datasets import DataFactory
 from ..metrics import Accuracy, Average
-from ..models import ModelFactory
-from ..optim import OptimFactory, SchedulerFactory
 
 
 class AbstractTrainer(metaclass=ABCMeta):
@@ -24,15 +22,16 @@ class AbstractTrainer(metaclass=ABCMeta):
         raise NotImplementedError
 
 
+@mlconfig.register
 class Trainer(AbstractTrainer):
 
-    def __init__(self, model, optimizer, scheduler, dataset, num_epochs):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model = ModelFactory.create(**model).to(self.device)
-        self.optimizer = OptimFactory.create(self.model.parameters(), **optimizer)
-        self.scheduler = SchedulerFactory.create(self.optimizer, **scheduler)
-        self.train_loader = DataFactory.create(train=True, **dataset)
-        self.test_loader = DataFactory.create(train=False, **dataset)
+    def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
+        self.device = device
+        self.model = model.to(self.device)
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self.train_loader = train_loader
+        self.test_loader = test_loader
         self.num_epochs = num_epochs
 
         self.epoch = 1
