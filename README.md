@@ -11,3 +11,9 @@ $ python -u train.py -c configs/mnist.json
 ```shell
 $ python -m unittest discover tests -v
 ```
+
+## MLflow
+
+```shell
+$ mlflow ui
+```
