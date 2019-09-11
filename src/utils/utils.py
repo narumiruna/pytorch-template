@@ -6,12 +6,12 @@ import yaml
 
 def load_yaml(f):
     with open(f, 'r') as fp:
-        return yaml.laod(fp)
+        return yaml.safe_load(fp)
 
 
 def save_yaml(data, f, **kwargs):
     with open(f, 'w') as fp:
-        yaml.dump(data, fp, **kwargs)
+        yaml.safe_dump(data, fp, **kwargs)
 
 
 def load_json(f):
