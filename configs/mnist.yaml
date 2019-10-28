@@ -12,8 +12,9 @@ model:
   name: LeNet
 
 optimizer:
-  name: Adam
+  name: SGD
   lr: 1.e-3
+  nesterov: True
 
 scheduler:
   name: StepLR

@@ -17,6 +17,9 @@ _C.model.name = 'LeNet'
 _C.optimizer = Config()
 _C.optimizer.name = 'Adam'
 _C.optimizer.lr = 1.e-3
+_C.optimizer.betas = (0.9, 0.99)  # Adam
+_C.optimizer.momentum = 0.9
+_C.optimizer.nesterov = True  # SGD
 
 _C.scheduler = Config()
 _C.scheduler.name = 'StepLR'
