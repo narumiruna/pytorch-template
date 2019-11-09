@@ -1,20 +1,24 @@
 trainer:
-  name: Trainer
-  num_epochs: 20
+  class: Trainer
+  params:
+    num_epochs: 20
 
 dataset:
-  name: MNISTDataloader
-  root: data
-  batch_size: 256
-  num_workers: 0
+  class: MNISTDataloader
+  params:
+    root: data
+    batch_size: 256
+    num_workers: 0
 
 model:
-  name: LeNet
+  class: LeNet
 
 optimizer:
-  name: Adam
-  lr: 1.e-3
+  class: Adam
+  params:
+    lr: 1.e-3
 
 scheduler:
-  name: StepLR
-  step_size: 10
+  class: StepLR
+  params:
+    step_size: 10
