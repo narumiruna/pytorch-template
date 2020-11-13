@@ -4,7 +4,7 @@ from torchvision import datasets, transforms
 
 
 @mlconfig.register
-class MNISTDataloader(data.DataLoader):
+class MNISTDataLoader(data.DataLoader):
 
     def __init__(self, root: str, train: bool, batch_size: int, **kwargs):
         transform = transforms.Compose([
@@ -15,4 +15,4 @@ class MNISTDataloader(data.DataLoader):
 
         dataset = datasets.MNIST(root, train=train, transform=transform, download=True)
 
-        super(MNISTDataloader, self).__init__(dataset=dataset, batch_size=batch_size, shuffle=train, **kwargs)
+        super(MNISTDataLoader, self).__init__(dataset=dataset, batch_size=batch_size, shuffle=train, **kwargs)
