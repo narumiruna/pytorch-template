@@ -29,7 +29,7 @@ class Trainer(AbstractTrainer):
 
     def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
         self.device = device
-        self.model = model.to(self.device)
+        self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.train_loader = train_loader
