@@ -1,6 +1,5 @@
-import mlconfig
+import mlconfig.torch
 from torch import optim
 
-mlconfig.register(optim.Adam)
-
-mlconfig.register(optim.lr_scheduler.StepLR)
+mlconfig.torch.register_torch_optimizers()
+mlconfig.torch.register_torch_schedulers()
