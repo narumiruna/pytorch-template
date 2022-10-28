@@ -20,7 +20,4 @@ jobs:
       - name: Test
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-        run: |
-          pip install codecov pytest
-          coverage run -m pytest -v -s tests
-          codecov
+        run: make cover
