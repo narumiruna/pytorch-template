@@ -1,20 +1,13 @@
-import unittest
 
 import torch
 
 from src.models import LeNet
 
 
-class TestModels(unittest.TestCase):
-
-    def test_lenet(self):
-        m = LeNet()
-        x = torch.randn(1, 1, 32, 32)
-        with torch.no_grad():
-            y = m(x)
-
-        self.assertListEqual(list(y.size()), [1, 10])
-
-
-if __name__ == '__main__':
-    unittest.main()
+@torch.no_grad()
+def test_lenet_forward():
+    n = 2
+    m = LeNet()
+    x = torch.randn(n, 1, 32, 32)
+    y = m(x)
+    assert list(y.size()) == [n, 10]
