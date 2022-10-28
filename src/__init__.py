@@ -1,1 +1,4 @@
-from . import models, trainers, datasets, models, optim
+from . import datasets
+from . import models
+from . import optim
+from . import trainers
