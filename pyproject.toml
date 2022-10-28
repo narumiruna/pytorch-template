@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "pytorch-template"
+version = "0.1.0"
+description = ""
+authors = ["なるみ <toucans-cutouts0f@icloud.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.12.1"
+torchvision = "^0.13.1"
+omegaconf = "^2.2.3"
+mlflow = "^1.30.0"
+tqdm = "^4.64.1"
+loguru = "^0.6.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^5.0.4"
+yapf = "^0.32.0"
+pytest = "^7.2.0"
+codecov = "^2.1.12"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
