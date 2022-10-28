@@ -1,5 +1,6 @@
-import mlconfig
 from torch import nn
+
+from ..utils import register
 
 
 class ConvBNReLU(nn.Sequential):
@@ -12,7 +13,7 @@ class ConvBNReLU(nn.Sequential):
         )
 
 
-@mlconfig.register
+@register
 class LeNet(nn.Module):
 
     def __init__(self):
