@@ -1,19 +1,14 @@
 # PyTorch Template
 
-## Training
+## Usage
 
-```shell
-$ python -u train.py -c configs/mnist.json
-```
+```sh
+# install poetry
+pip install poetry
 
-## Unit testing
+# install dependencies
+poetry install
 
-```shell
-$ python -m unittest discover tests -v
-```
-
-## MLflow
-
-```shell
-$ mlflow ui
+# train model
+poetry run python train.py -c configs/mnist.yaml
 ```
