@@ -2,9 +2,9 @@ import click
 import mlflow
 import torch
 
-from src.utils import instantiate
-from src.utils import load
-from src.utils import manual_seed
+from pytorch_template.utils import instantiate
+from pytorch_template.utils import load
+from pytorch_template.utils import manual_seed
 
 
 @click.command()
