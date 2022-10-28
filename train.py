@@ -1,45 +1,33 @@
-import argparse
-
-import mlconfig
+import click
 import mlflow
-import numpy as np
 import torch
 
-import src
+from src.utils import instantiate
+from src.utils import load
+from src.utils import manual_seed
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, default='configs/mnist.yaml')
-    parser.add_argument('-r', '--resume', type=str, default=None)
-    return parser.parse_args()
-
-
-def manual_seed(seed=0):
-    """https://pytorch.org/docs/stable/notes/randomness.html"""
-    torch.manual_seed(seed)
-    np.random.seed(seed)
-
-
-def main():
-    args = parse_args()
-    config = mlconfig.load(args.config)
-    mlflow.log_artifact(args.config)
-    mlflow.log_params(config.flat())
+@click.command()
+@click.option('-c', '--config-file', type=click.STRING, default='configs/mnist.yaml')
+@click.option('-r', '--resume', type=click.STRING, default=None)
+def main(config_file, resume):
+    config = load(config_file)
+    mlflow.log_artifact(config_file)
+    mlflow.log_params(config.log_params)
 
     manual_seed()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = config.model().to(device)
-    optimizer = config.optimizer(model.parameters())
-    scheduler = config.scheduler(optimizer)
-    train_loader = config.dataset(train=True)
-    test_loader = config.dataset(train=False)
+    model = instantiate(config.model).to(device)
+    optimizer = instantiate(config.optimizer, model.parameters())
+    scheduler = instantiate(config.scheduler, optimizer)
+    train_loader = instantiate(config.dataset, train=True)
+    test_loader = instantiate(config.dataset, train=False)
 
-    trainer = config.trainer(device, model, optimizer, scheduler, train_loader, test_loader)
+    trainer = instantiate(config.trainer, device, model, optimizer, scheduler, train_loader, test_loader)
 
-    if args.resume is not None:
-        trainer.resume(args.resume)
+    if resume is not None:
+        trainer.resume(resume)
 
     trainer.fit()
 

@@ -1,1 +1,1 @@
-from .mnist import MNISTDataloader
+from .mnist import MNISTDataLoader

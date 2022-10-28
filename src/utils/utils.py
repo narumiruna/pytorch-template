@@ -1,7 +1,15 @@
 import json
 import os
 
+import numpy as np
+import torch
 import yaml
+
+
+def manual_seed(seed=0):
+    """https://pytorch.org/docs/stable/notes/randomness.html"""
+    torch.manual_seed(seed)
+    np.random.seed(seed)
 
 
 def load_yaml(f):

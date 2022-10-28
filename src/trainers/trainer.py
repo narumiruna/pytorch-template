@@ -1,12 +1,15 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
-import mlconfig
 import mlflow
 import torch
 import torch.nn.functional as F
-from tqdm import tqdm, trange
+from tqdm import tqdm
+from tqdm import trange
 
-from ..metrics import Accuracy, Average
+from ..metrics import Accuracy
+from ..metrics import Average
+from ..utils import register
 
 
 class AbstractTrainer(metaclass=ABCMeta):
@@ -24,7 +27,7 @@ class AbstractTrainer(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-@mlconfig.register
+@register
 class Trainer(AbstractTrainer):
 
     def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
