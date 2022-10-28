@@ -1,7 +1,7 @@
 
 import torch
 
-from src.models import LeNet
+from pytorch_template.models import LeNet
 
 
 @torch.no_grad()
