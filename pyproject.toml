@@ -12,6 +12,7 @@ omegaconf = "^2.2.3"
 mlflow = "^1.30.0"
 tqdm = "^4.64.1"
 loguru = "^0.6.0"
+torchmetrics = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
