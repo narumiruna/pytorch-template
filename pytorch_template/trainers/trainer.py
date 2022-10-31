@@ -1,34 +1,16 @@
-from abc import ABCMeta
-from abc import abstractmethod
-
 import mlflow
 import torch
 import torch.nn.functional as F
+from torchmetrics import Accuracy
+from torchmetrics import MeanMetric
 from tqdm import tqdm
 from tqdm import trange
 
-from ..metrics import Accuracy
-from ..metrics import Average
 from ..utils import register
 
 
-class AbstractTrainer(metaclass=ABCMeta):
-
-    @abstractmethod
-    def fit(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def train(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def evaluate(self):
-        raise NotImplementedError
-
-
 @register
-class Trainer(AbstractTrainer):
+class Trainer(object):
 
     def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
         self.device = device
@@ -48,8 +30,6 @@ class Trainer(AbstractTrainer):
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
-            self.save_checkpoint('checkpoint.pth')
-
             metrics = dict(train_loss=train_loss.value,
                            train_acc=train_acc.value,
                            test_loss=test_loss.value,
@@ -65,8 +45,8 @@ class Trainer(AbstractTrainer):
     def train(self):
         self.model.train()
 
-        train_loss = Average()
-        train_acc = Accuracy()
+        loss_metric = MeanMetric()
+        acc_metric = Accuracy()
 
         for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
@@ -79,33 +59,34 @@ class Trainer(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
 
-            train_loss.update(loss.item(), number=x.size(0))
-            train_acc.update(output, y)
+            loss_metric.update(loss, weight=x.size(0))
+            acc_metric.update(output, y)
 
-        return train_loss, train_acc
+        return loss_metric.compute().item(), acc_metric.compute().item()
 
+    @torch.no_grad()
     def evaluate(self):
         self.model.eval()
 
-        test_loss = Average()
-        test_acc = Accuracy()
+        loss_metric = MeanMetric()
+        acc_metric = Accuracy()
 
-        with torch.no_grad():
-            for x, y in tqdm(self.test_loader):
-                x = x.to(self.device)
-                y = y.to(self.device)
+        for x, y in tqdm(self.test_loader):
+            x = x.to(self.device)
+            y = y.to(self.device)
 
-                output = self.model(x)
-                loss = F.cross_entropy(output, y)
+            output = self.model(x)
+            loss = F.cross_entropy(output, y)
 
-                test_loss.update(loss.item(), number=x.size(0))
-                test_acc.update(output, y)
+            loss_metric.update(loss, weight=x.size(0))
+            acc_metric.update(output, y)
 
+        test_acc = acc_metric.compute().item()
         if test_acc > self.best_acc:
             self.best_acc = test_acc
             self.save_checkpoint('best.pth')
 
-        return test_loss, test_acc
+        return loss_metric.compute().item(), test_acc
 
     def save_checkpoint(self, f):
         self.model.eval()

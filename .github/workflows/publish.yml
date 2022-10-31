@@ -20,5 +20,4 @@ jobs:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
           pip install poetry
-          poetry build -f wheel
-          poetry publish -u __token__ -p $PYPI_TOKEN
+          make publish
