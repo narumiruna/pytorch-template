@@ -1,5 +1,5 @@
 from .conf import instantiate
-from .conf import load
+from .conf import load_config
 from .conf import register
 from .utils import load_json
 from .utils import load_yaml
