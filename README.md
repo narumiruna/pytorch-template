@@ -10,5 +10,5 @@ pip install poetry
 poetry install
 
 # train model
-poetry run pytorch_template -c configs/mnist.yaml
+poetry run template -c configs/mnist.yaml
 ```
