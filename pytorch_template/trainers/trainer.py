@@ -30,16 +30,16 @@ class Trainer(object):
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
-            metrics = dict(train_loss=train_loss.value,
-                           train_acc=train_acc.value,
-                           test_loss=test_loss.value,
-                           test_acc=test_acc.value)
+            metrics = dict(train_loss=train_loss,
+                           train_acc=train_acc,
+                           test_loss=test_loss,
+                           test_acc=test_acc)
             mlflow.log_metrics(metrics, step=self.epoch)
 
             format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
-            format_string += 'train loss: {}, train acc: {}, '.format(train_loss, train_acc)
-            format_string += 'test loss: {}, test acc: {}, '.format(test_loss, test_acc)
-            format_string += 'best test acc: {}.'.format(self.best_acc)
+            format_string += 'train loss: {:.4f}, train acc: {:.4f}, '.format(train_loss, train_acc)
+            format_string += 'test loss: {:.4f}, test acc: {:.4f}, '.format(test_loss, test_acc)
+            format_string += 'best test acc: {:.4f}.'.format(self.best_acc)
             tqdm.write(format_string)
 
     def train(self):
