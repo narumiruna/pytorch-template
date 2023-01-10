@@ -22,7 +22,7 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
+        run: poetry install
       - name: Train model
-        run: |
-          poetry install
-          poetry run template -c configs/mnist.yaml
+        run: poetry run template -c configs/mnist.yaml
