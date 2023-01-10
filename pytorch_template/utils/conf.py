@@ -7,7 +7,7 @@ _REGISTRY = {}
 _KEY_OF_FUNC_OR_CLS = 'name'
 
 
-def load(f=None, obj=None) -> OmegaConf:
+def load_config(f=None, obj=None) -> OmegaConf:
     """Load configuration file or structured object.
     If both are provided, then the configuration from file
     will override the configuration from structured object.

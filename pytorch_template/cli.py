@@ -2,14 +2,14 @@ import click
 import mlflow
 
 from .utils import instantiate
-from .utils import load
+from .utils import load_config
 
 
 @click.command()
 @click.option('-c', '--config-file', type=click.STRING, default='configs/mnist.yaml')
 @click.option('-r', '--resume', type=click.STRING, default=None)
 def main(config_file, resume):
-    config = load(config_file)
+    config = load_config(config_file)
 
     mlflow.log_artifact(config_file)
 
