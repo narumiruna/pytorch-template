@@ -1,10 +1,10 @@
-name: Test
+name: Train
 
 on:
   push:
 
 jobs:
-  test:
+  train:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -24,7 +24,5 @@ jobs:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Install dependencies
         run: poetry install
-      - name: Test
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-        run: make cover
+      - name: Train model
+        run: poetry run template -c configs/mnist.yaml

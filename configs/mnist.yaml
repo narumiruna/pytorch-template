@@ -2,7 +2,7 @@ job:
   name: MNISTTrainingJob
 
 trainer:
-  name: Trainer
+  name: MNISTTrainer
   num_epochs: 20
 
 dataset:
