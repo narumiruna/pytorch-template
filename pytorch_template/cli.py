@@ -1,8 +1,8 @@
 import click
 import mlflow
 
-from pytorch_template.utils import instantiate
-from pytorch_template.utils import load
+from .utils import instantiate
+from .utils import load
 
 
 @click.command()
@@ -15,7 +15,3 @@ def main(config_file, resume):
 
     job = instantiate(config.job)
     job.run(config, resume)
-
-
-if __name__ == '__main__':
-    main()
