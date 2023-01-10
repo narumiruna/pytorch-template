@@ -1,5 +1,5 @@
 job:
-  name: mnist_training_job
+  name: MNISTTrainingJob
 
 trainer:
   name: Trainer

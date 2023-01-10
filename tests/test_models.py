@@ -1,4 +1,3 @@
-
 import torch
 
 from pytorch_template.models import LeNet
