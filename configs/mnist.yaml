@@ -1,3 +1,6 @@
+job:
+  name: MNISTTrainingJob
+
 trainer:
   name: Trainer
   num_epochs: 20
