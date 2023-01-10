@@ -30,10 +30,7 @@ class Trainer(object):
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
-            metrics = dict(train_loss=train_loss,
-                           train_acc=train_acc,
-                           test_loss=test_loss,
-                           test_acc=test_acc)
+            metrics = dict(train_loss=train_loss, train_acc=train_acc, test_loss=test_loss, test_acc=test_acc)
             mlflow.log_metrics(metrics, step=self.epoch)
 
             format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)

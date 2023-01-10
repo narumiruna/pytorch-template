@@ -4,16 +4,11 @@ import torch
 from ..utils import instantiate
 from ..utils import manual_seed
 from ..utils import register
-
-
-class Job:
-
-    def run(self):
-        raise NotImplementedError
+from .job import Job
 
 
 @register
-class MNISTTrainingJob(object):
+class MNISTTrainingJob(Job):
 
     def run(self, config, resume=None):
         mlflow.log_params(config.log_params)
