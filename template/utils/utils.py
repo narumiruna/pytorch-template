@@ -1,11 +1,11 @@
 import json
-import os
 
 import numpy as np
 import torch
 import yaml
 
 from pathlib import Path
+
 
 def manual_seed(seed=0):
     """https://pytorch.org/docs/stable/notes/randomness.html"""

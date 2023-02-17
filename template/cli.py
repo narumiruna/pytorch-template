@@ -1,5 +1,4 @@
 import click
-import mlflow
 
 from .utils import instantiate
 from .utils import load_config
@@ -10,8 +9,6 @@ from .utils import load_config
 @click.option('-r', '--resume', type=click.STRING, default=None)
 def main(config_file, resume):
     config = load_config(config_file)
-
-    mlflow.log_artifact(config_file)
 
     job = instantiate(config.job)
     job.run(config, resume)
