@@ -1,9 +1,10 @@
 import json
-import os
 
 import numpy as np
 import torch
 import yaml
+
+from pathlib import Path
 
 
 def manual_seed(seed=0):
@@ -18,6 +19,7 @@ def load_yaml(f):
 
 
 def save_yaml(data, f, **kwargs):
+    Path(f).parent.mkdir(parents=True, exist_ok=True)
     with open(f, 'w') as fp:
         yaml.safe_dump(data, fp, **kwargs)
 
@@ -30,6 +32,6 @@ def load_json(f):
 
 
 def save_json(data, f, **kwargs):
-    os.makedirs(os.path.dirname(f), exist_ok=True)
+    Path(f).parent.mkdir(parents=True, exist_ok=True)
     with open(f, 'w') as fp:
         json.dump(data, fp, **kwargs)

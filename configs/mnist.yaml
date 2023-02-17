@@ -1,3 +1,5 @@
+device: cuda
+
 job:
   name: MNISTTrainingJob
 
