@@ -21,3 +21,8 @@ jobs:
         run: |
           pip install flake8
           flake8 --verbose .
+      - name: Type check
+        uses: jpetrucciani/mypy-check@master
+        with:
+          path: '.'
+          mypy_flags: '--check-untyped-defs'
