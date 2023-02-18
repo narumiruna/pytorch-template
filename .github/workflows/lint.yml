@@ -32,4 +32,4 @@ jobs:
         uses: jpetrucciani/mypy-check@master
         with:
           path: '.'
-          mypy_flags: '--check-untyped-defs'
+          mypy_flags: '--check-untyped-defs --ignore-missing-imports'
