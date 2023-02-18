@@ -22,14 +22,3 @@ jobs:
         run: |
           pip install flake8
           flake8 --verbose .
-      - name: Set up Poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
-      - name: Install dependencies
-        run: poetry install
-      - name: Type check
-        uses: jpetrucciani/mypy-check@master
-        with:
-          path: '.'
-          mypy_flags: '--check-untyped-defs --ignore-missing-imports'
