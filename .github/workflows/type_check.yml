@@ -6,7 +6,7 @@ on:
       - '*.py'
 
 jobs:
-  type-check:
+  mypy:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
