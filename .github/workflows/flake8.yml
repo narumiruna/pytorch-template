@@ -21,5 +21,7 @@ jobs:
 #         run: |
 #           pip install flake8
 #           flake8 --verbose .
+      - name: Setup flake8 annotations
+        uses: rbialon/flake8-annotations@v1
       - name: flake8 Lint
         uses: py-actions/flake8@v2
