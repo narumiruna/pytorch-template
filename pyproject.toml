@@ -5,7 +5,7 @@ description = ""
 authors = ["なるみ <toucans-cutouts0f@icloud.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 torch = "^1.13.1"
 torchvision = "^0.14.1"
 omegaconf = "^2.2.3"
