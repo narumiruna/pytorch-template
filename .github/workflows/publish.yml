@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [3.9]
+        python-version: [3.8]
         poetry-version: [1.4.1]
 
     steps:
@@ -31,10 +31,7 @@ jobs:
           path: |
             ~/.cache/pypoetry/artifacts
             ~/.cache/pypoetry/cache
-          key: ${{ runner.os }}-pip
-          # key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pip
+          key: ${{ runner.os }}-poetry
 
       - name: Publish
         env:

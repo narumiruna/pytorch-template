@@ -5,7 +5,7 @@ description = ""
 authors = ["なるみ <toucans-cutouts0f@icloud.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 torch = "^1.13.1"
 torchvision = "^0.14.1"
 omegaconf = "^2.2.3"
@@ -13,6 +13,7 @@ mlflow = "^2.2.1"
 tqdm = "^4.64.1"
 loguru = "^0.6.0"
 torchmetrics = "^0.10.1"
+numba = "^0.56.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
