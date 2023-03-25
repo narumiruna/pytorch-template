@@ -29,7 +29,7 @@ jobs:
           path: |
             ~/.cache/pypoetry/artifacts
             ~/.cache/pypoetry/cache
-          key: ${{ runner.os }}-pip
+          key: ${{ runner.os }}-poetry
 
       - name: Install dependencies
         run: poetry install
