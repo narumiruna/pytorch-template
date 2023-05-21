@@ -5,7 +5,7 @@ description = ""
 authors = ["なるみ <toucans-cutouts0f@icloud.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 torch = "^1.13.1"
 torchvision = "^0.14.1"
 omegaconf = "^2.2.3"
@@ -15,12 +15,12 @@ loguru = "^0.6.0"
 torchmetrics = "^0.10.1"
 numba = "^0.56.4"
 
-[tool.poetry.dev-dependencies]
-flake8 = "^5.0.4"
-yapf = "^0.32.0"
-pytest = "^7.2.0"
-codecov = "^2.1.12"
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+yapf = "^0.33.0"
 toml = "^0.10.2"
+pytest = "^7.3.1"
+codecov = "^2.1.13"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

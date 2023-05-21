@@ -3,7 +3,7 @@ name: Type check
 on:
   push:
     paths:
-      - '*.py'
+      - "*.py"
 
 jobs:
   mypy:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
 
     steps:
       - uses: actions/checkout@v3
@@ -26,6 +26,6 @@ jobs:
 
       - uses: sasanquaneuf/mypy-github-action@releases/v1
         with:
-          checkName: 'mypy'   # NOTE: this needs to be the same as the job name
+          checkName: "mypy" # NOTE: this needs to be the same as the job name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

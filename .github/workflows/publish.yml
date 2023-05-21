@@ -12,8 +12,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [3.8]
-        poetry-version: [1.4.1]
+        python-version: [3.9]
+        poetry-version: [1.5.0]
 
     steps:
       - uses: actions/checkout@v3
@@ -25,13 +25,14 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: poetry
 
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry/artifacts
-            ~/.cache/pypoetry/cache
-          key: ${{ runner.os }}-poetry
+      # - uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/.cache/pypoetry/artifacts
+      #       ~/.cache/pypoetry/cache
+      #     key: ${{ runner.os }}-poetry
 
       - name: Publish
         env:
