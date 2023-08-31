@@ -12,8 +12,9 @@ from .trainer import Trainer
 
 @register
 class MNISTTrainer(Trainer):
-
-    def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
+    def __init__(
+        self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs
+    ):
         self.device = device
         self.model = model
         self.optimizer = optimizer
@@ -31,13 +32,22 @@ class MNISTTrainer(Trainer):
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
-            metrics = dict(train_loss=train_loss, train_acc=train_acc, test_loss=test_loss, test_acc=test_acc)
+            metrics = dict(
+                train_loss=train_loss,
+                train_acc=train_acc,
+                test_loss=test_loss,
+                test_acc=test_acc,
+            )
             mlflow.log_metrics(metrics, step=self.epoch)
 
-            format_string = 'Epoch: {}/{}, '.format(self.epoch, self.num_epochs)
-            format_string += 'train loss: {:.4f}, train acc: {:.4f}, '.format(train_loss, train_acc)
-            format_string += 'test loss: {:.4f}, test acc: {:.4f}, '.format(test_loss, test_acc)
-            format_string += 'best test acc: {:.4f}.'.format(self.best_acc)
+            format_string = "Epoch: {}/{}, ".format(self.epoch, self.num_epochs)
+            format_string += "train loss: {:.4f}, train acc: {:.4f}, ".format(
+                train_loss, train_acc
+            )
+            format_string += "test loss: {:.4f}, test acc: {:.4f}, ".format(
+                test_loss, test_acc
+            )
+            format_string += "best test acc: {:.4f}.".format(self.best_acc)
             tqdm.write(format_string)
 
     def train(self):
@@ -82,7 +92,7 @@ class MNISTTrainer(Trainer):
         test_acc = acc_metric.compute().item()
         if test_acc > self.best_acc:
             self.best_acc = test_acc
-            self.save_checkpoint('best.pth')
+            self.save_checkpoint("best.pth")
 
         return loss_metric.compute().item(), test_acc
 
@@ -90,11 +100,11 @@ class MNISTTrainer(Trainer):
         self.model.eval()
 
         checkpoint = {
-            'model': self.model.state_dict(),
-            'optimizer': self.optimizer.state_dict(),
-            'scheduler': self.scheduler.state_dict(),
-            'epoch': self.epoch,
-            'best_acc': self.best_acc
+            "model": self.model.state_dict(),
+            "optimizer": self.optimizer.state_dict(),
+            "scheduler": self.scheduler.state_dict(),
+            "epoch": self.epoch,
+            "best_acc": self.best_acc,
         }
 
         torch.save(checkpoint, f)
@@ -103,8 +113,8 @@ class MNISTTrainer(Trainer):
     def resume(self, f):
         checkpoint = torch.load(f, map_location=self.device)
 
-        self.model.load_state_dict(checkpoint['model'])
-        self.optimizer.load_state_dict(checkpoint['optimizer'])
-        self.scheduler.load_state_dict(checkpoint['scheduler'])
-        self.epoch = checkpoint['epoch'] + 1
-        self.best_acc = checkpoint['best_acc']
+        self.model.load_state_dict(checkpoint["model"])
+        self.optimizer.load_state_dict(checkpoint["optimizer"])
+        self.scheduler.load_state_dict(checkpoint["scheduler"])
+        self.epoch = checkpoint["epoch"] + 1
+        self.best_acc = checkpoint["best_acc"]

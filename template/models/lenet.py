@@ -4,7 +4,6 @@ from ..utils import register
 
 
 class ConvBNReLU(nn.Sequential):
-
     def __init__(self, in_channels, out_channels, kernel_size):
         super(ConvBNReLU, self).__init__(
             nn.Conv2d(in_channels, out_channels, kernel_size, bias=False),
@@ -15,7 +14,6 @@ class ConvBNReLU(nn.Sequential):
 
 @register
 class LeNet(nn.Module):
-
     def __init__(self):
         super(LeNet, self).__init__()
         self.features = nn.Sequential(
