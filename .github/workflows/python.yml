@@ -21,7 +21,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: poetry
       - name: Install dependencies
-        run: poetry install
+        run: |
+          poetry install
+          poetry run pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
       - name: Lint
         run: make lint
       - name: Test
