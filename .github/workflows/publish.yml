@@ -16,7 +16,7 @@ jobs:
         poetry-version: ["1.6.1"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: abatilo/actions-poetry@v2
         with:
@@ -26,13 +26,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: poetry
-
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ~/.cache/pypoetry/artifacts
-      #       ~/.cache/pypoetry/cache
-      #     key: ${{ runner.os }}-poetry
 
       - name: Publish
         env:

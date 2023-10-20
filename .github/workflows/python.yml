@@ -1,10 +1,10 @@
-name: Test
+name: Python
 
 on:
   push:
 
 jobs:
-  test:
+  python:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,15 +25,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: poetry
 
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ~/.cache/pypoetry/artifacts
-      #       ~/.cache/pypoetry/cache
-      #     key: ${{ runner.os }}-poetry
-
       - name: Install dependencies
         run: poetry install
+
+      - name: Lint
+        run: make lint
 
       - name: Test
         env:
