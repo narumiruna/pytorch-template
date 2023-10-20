@@ -1,8 +1,7 @@
+from mlconfig import register
 from torch.utils import data
 from torchvision import datasets
 from torchvision import transforms
-
-from ..utils import register
 
 
 @register

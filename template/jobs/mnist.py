@@ -1,10 +1,10 @@
 import mlflow
 import torch
+from mlconfig import instantiate
+from mlconfig import register
 from omegaconf import OmegaConf
 
-from ..utils import instantiate
 from ..utils import manual_seed
-from ..utils import register
 from .job import Job
 
 

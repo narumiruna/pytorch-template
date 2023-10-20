@@ -1,12 +1,12 @@
 import mlflow
 import torch
 import torch.nn.functional as F
+from mlconfig import register
 from torchmetrics import Accuracy
 from torchmetrics import MeanMetric
 from tqdm import tqdm
 from tqdm import trange
 
-from ..utils import register
 from .trainer import Trainer
 
 

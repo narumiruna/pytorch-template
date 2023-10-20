@@ -1,6 +1,5 @@
+from mlconfig import register
 from torch import optim
-
-from .utils import register
 
 register(optim.Adam)
 

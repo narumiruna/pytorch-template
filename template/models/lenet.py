@@ -1,6 +1,5 @@
+from mlconfig import register
 from torch import nn
-
-from ..utils import register
 
 
 class ConvBNReLU(nn.Sequential):
