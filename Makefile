@@ -1,18 +1,14 @@
 install:
 	poetry install
 
-lint: install
+lint:
 	poetry run flake8 -v
 
-test: install
-	poetry run pytest -v -s tests
-
-cover: install
-	poetry run coverage run -m pytest -v -s tests
-	poetry run coverage report -m
+test:
+	poetry run pytest -v -s --cov=. tests
 
 publish:
 	poetry build -f wheel
-	poetry publish -u __token__ -p $(PYPI_TOKEN)
+	poetry publish
 
-.PHONY: lint test cover
+.PHONY: lint test publish

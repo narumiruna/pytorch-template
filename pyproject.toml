@@ -9,17 +9,17 @@ python = "^3.9"
 torch = "^2.1.0"
 torchvision = "^0.16.0"
 torchmetrics = "^0.10.1"
-mlflow = "^2.8.1"
 tqdm = "^4.64.1"
 loguru = "^0.6.0"
 mlconfig = "^0.2.0"
+mlflow-skinny = "^2.8.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
-coverage = "^7.3.2"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
 pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
 toml = "^0.10.2"
 
 [build-system]

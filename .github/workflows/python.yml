@@ -10,7 +10,7 @@ jobs:
       max-parallel: 1
       matrix:
         python-version: ["3.9"]
-        poetry-version: ["1.6.1"]
+        poetry-version: ["1.7.1"]
     steps:
       - uses: actions/checkout@v4
       - uses: abatilo/actions-poetry@v2
@@ -27,6 +27,4 @@ jobs:
       - name: Lint
         run: make lint
       - name: Test
-        env:
-          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
-        run: make cover
+        run: make test
