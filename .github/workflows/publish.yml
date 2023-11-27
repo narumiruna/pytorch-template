@@ -25,4 +25,6 @@ jobs:
       - name: Publish
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: make publish
+        run: |
+          poetry build -f wheel
+          poetry publish
