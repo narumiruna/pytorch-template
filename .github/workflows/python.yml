@@ -28,6 +28,10 @@ jobs:
           poetry install
           poetry run pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
       - name: Lint
-        run: make lint
+        run: poetry run flake8 -v .
       - name: Test
-        run: make test
+        run: poetry run pytest -v -s --cov=template --cov-report=xml tests
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
