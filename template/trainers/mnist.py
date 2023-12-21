@@ -12,9 +12,7 @@ from .trainer import Trainer
 
 @register
 class MNISTTrainer(Trainer):
-    def __init__(
-        self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs
-    ):
+    def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
         self.device = device
         self.model = model
         self.optimizer = optimizer
@@ -23,32 +21,30 @@ class MNISTTrainer(Trainer):
         self.test_loader = test_loader
         self.num_epochs = num_epochs
 
-        self.epoch = 1
         self.best_acc = 0
+        self.state = {"epoch": 1}
 
     def fit(self):
-        for self.epoch in trange(self.epoch, self.num_epochs + 1):
+        for epoch in trange(self.state["epoch"], self.num_epochs + 1):
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.evaluate()
             self.scheduler.step()
 
-            metrics = dict(
-                train_loss=train_loss,
-                train_acc=train_acc,
-                test_loss=test_loss,
-                test_acc=test_acc,
-            )
-            mlflow.log_metrics(metrics, step=self.epoch)
+            metrics = {
+                "train_loss": train_loss,
+                "train_acc": train_acc,
+                "test_loss": test_loss,
+                "test_acc": test_acc,
+            }
+            mlflow.log_metrics(metrics, step=epoch)
 
-            format_string = "Epoch: {}/{}, ".format(self.epoch, self.num_epochs)
-            format_string += "train loss: {:.4f}, train acc: {:.4f}, ".format(
-                train_loss, train_acc
-            )
-            format_string += "test loss: {:.4f}, test acc: {:.4f}, ".format(
-                test_loss, test_acc
-            )
+            format_string = "Epoch: {}/{}, ".format(epoch, self.num_epochs)
+            format_string += "train loss: {:.4f}, train acc: {:.4f}, ".format(train_loss, train_acc)
+            format_string += "test loss: {:.4f}, test acc: {:.4f}, ".format(test_loss, test_acc)
             format_string += "best test acc: {:.4f}.".format(self.best_acc)
             tqdm.write(format_string)
+
+            self.state["epoch"] = epoch
 
     def train(self):
         self.model.train()
@@ -103,7 +99,7 @@ class MNISTTrainer(Trainer):
             "model": self.model.state_dict(),
             "optimizer": self.optimizer.state_dict(),
             "scheduler": self.scheduler.state_dict(),
-            "epoch": self.epoch,
+            "state": self.state,
             "best_acc": self.best_acc,
         }
 
@@ -116,5 +112,5 @@ class MNISTTrainer(Trainer):
         self.model.load_state_dict(checkpoint["model"])
         self.optimizer.load_state_dict(checkpoint["optimizer"])
         self.scheduler.load_state_dict(checkpoint["scheduler"])
-        self.epoch = checkpoint["epoch"] + 1
+        self.state = checkpoint["state"]
         self.best_acc = checkpoint["best_acc"]
