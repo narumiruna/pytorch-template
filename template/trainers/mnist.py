@@ -2,6 +2,10 @@ import mlflow
 import torch
 import torch.nn.functional as F
 from mlconfig import register
+from torch.nn import Module
+from torch.optim import Optimizer
+from torch.optim.lr_scheduler import LRScheduler
+from torch.utils.data import DataLoader
 from torchmetrics import Accuracy
 from torchmetrics import MeanMetric
 from tqdm import tqdm
@@ -12,7 +16,17 @@ from .trainer import Trainer
 
 @register
 class MNISTTrainer(Trainer):
-    def __init__(self, device, model, optimizer, scheduler, train_loader, test_loader, num_epochs):
+    def __init__(
+        self,
+        device: torch.device,
+        model: Module,
+        optimizer: Optimizer,
+        scheduler: LRScheduler,
+        train_loader: DataLoader,
+        test_loader: DataLoader,
+        num_epochs: int,
+        num_classes: int,
+    ) -> None:
         self.device = device
         self.model = model
         self.optimizer = optimizer
@@ -20,11 +34,12 @@ class MNISTTrainer(Trainer):
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.num_epochs = num_epochs
+        self.num_classes = num_classes
 
         self.best_acc = 0
         self.state = {"epoch": 1}
 
-    def fit(self):
+    def fit(self) -> None:
         for epoch in trange(self.state["epoch"], self.num_epochs + 1):
             train_loss, train_acc = self.train()
             test_loss, test_acc = self.evaluate()
@@ -46,11 +61,11 @@ class MNISTTrainer(Trainer):
 
             self.state["epoch"] = epoch
 
-    def train(self):
+    def train(self) -> None:
         self.model.train()
 
         loss_metric = MeanMetric()
-        acc_metric = Accuracy()
+        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes)
 
         for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
@@ -69,11 +84,11 @@ class MNISTTrainer(Trainer):
         return loss_metric.compute().item(), acc_metric.compute().item()
 
     @torch.no_grad()
-    def evaluate(self):
+    def evaluate(self) -> None:
         self.model.eval()
 
         loss_metric = MeanMetric()
-        acc_metric = Accuracy()
+        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes)
 
         for x, y in tqdm(self.test_loader):
             x = x.to(self.device)
@@ -92,7 +107,7 @@ class MNISTTrainer(Trainer):
 
         return loss_metric.compute().item(), test_acc
 
-    def save_checkpoint(self, f):
+    def save_checkpoint(self, f) -> None:
         self.model.eval()
 
         checkpoint = {
@@ -106,7 +121,7 @@ class MNISTTrainer(Trainer):
         torch.save(checkpoint, f)
         mlflow.log_artifact(f)
 
-    def resume(self, f):
+    def resume(self, f) -> None:
         checkpoint = torch.load(f, map_location=self.device)
 
         self.model.load_state_dict(checkpoint["model"])

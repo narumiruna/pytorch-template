@@ -1,3 +1,3 @@
 class Trainer:
-    def train(self):
+    def train(self) -> None:
         raise NotImplementedError
