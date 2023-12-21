@@ -6,6 +6,7 @@ job:
 trainer:
   name: MNISTTrainer
   num_epochs: 20
+  num_classes: 10
 
 dataset:
   name: MNISTDataLoader

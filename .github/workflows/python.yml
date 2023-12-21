@@ -23,12 +23,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: poetry
+      - uses: chartboost/ruff-action@v1
       - name: Install dependencies
         run: |
           poetry install
           poetry run pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
-      - name: Lint
-        run: poetry run flake8 -v .
       - name: Test
         run: poetry run pytest -v -s --cov=. --cov-report=xml tests
       - name: Upload coverage reports to Codecov
