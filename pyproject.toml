@@ -12,7 +12,7 @@ torchmetrics = "^1.2.0"
 tqdm = "^4.66.3"
 loguru = "^0.7.2"
 mlconfig = "^0.2.0"
-mlflow-skinny = "^2.9.2"
+wandb = "^0.17.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
