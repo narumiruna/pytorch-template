@@ -1,4 +1,3 @@
-import mlflow
 import torch
 import torch.nn.functional as F
 from mlconfig import register
@@ -10,6 +9,8 @@ from torchmetrics import Accuracy
 from torchmetrics import MeanMetric
 from tqdm import tqdm
 from tqdm import trange
+
+import wandb
 
 from .trainer import Trainer
 
@@ -51,7 +52,7 @@ class MNISTTrainer(Trainer):
                 "test_loss": test_loss,
                 "test_acc": test_acc,
             }
-            mlflow.log_metrics(metrics, step=epoch)
+            wandb.log(metrics, step=epoch)
 
             format_string = "Epoch: {}/{}, ".format(epoch, self.num_epochs)
             format_string += "train loss: {:.4f}, train acc: {:.4f}, ".format(train_loss, train_acc)
@@ -64,8 +65,8 @@ class MNISTTrainer(Trainer):
     def train(self) -> None:
         self.model.train()
 
-        loss_metric = MeanMetric()
-        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes)
+        loss_metric = MeanMetric().to(self.device)
+        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes).to(self.device)
 
         for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
@@ -87,8 +88,8 @@ class MNISTTrainer(Trainer):
     def evaluate(self) -> None:
         self.model.eval()
 
-        loss_metric = MeanMetric()
-        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes)
+        loss_metric = MeanMetric().to(self.device)
+        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes).to(self.device)
 
         for x, y in tqdm(self.test_loader):
             x = x.to(self.device)
@@ -119,7 +120,7 @@ class MNISTTrainer(Trainer):
         }
 
         torch.save(checkpoint, f)
-        mlflow.log_artifact(f)
+        wandb.save(f)
 
     def resume(self, f) -> None:
         checkpoint = torch.load(f, map_location=self.device)
