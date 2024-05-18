@@ -1,8 +1,7 @@
 import click
+import wandb
 from mlconfig import instantiate
 from mlconfig import load
-
-import wandb
 
 
 @click.command()

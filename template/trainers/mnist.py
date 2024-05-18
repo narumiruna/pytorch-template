@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+import wandb
 from mlconfig import register
 from torch.nn import Module
 from torch.optim import Optimizer
@@ -9,8 +10,6 @@ from torchmetrics import Accuracy
 from torchmetrics import MeanMetric
 from tqdm import tqdm
 from tqdm import trange
-
-import wandb
 
 from .trainer import Trainer
 
