@@ -17,6 +17,4 @@ class MNISTDataLoader(data.DataLoader):
 
         dataset = datasets.MNIST(root, train=train, transform=transform, download=True)
 
-        super(MNISTDataLoader, self).__init__(
-            dataset=dataset, batch_size=batch_size, shuffle=train, **kwargs
-        )
+        super(MNISTDataLoader, self).__init__(dataset=dataset, batch_size=batch_size, shuffle=train, **kwargs)
