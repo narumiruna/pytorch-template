@@ -24,11 +24,3 @@ optimizer:
 scheduler:
   name: StepLR
   step_size: 10
-
-log_params:
-  num_epochs: ${trainer.num_epochs}
-  batch_size: ${dataset.batch_size}
-  optimizer: ${optimizer.name}
-  lr: ${optimizer.lr}
-  scheduler: ${scheduler.name}
-  step_size: ${scheduler.step_size}
