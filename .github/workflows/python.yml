@@ -13,17 +13,20 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - uses: chartboost/ruff-action@v1
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check .
       - name: Install dependencies
         run: |
-          pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+          pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
           pip install .
       - name: Test
         run: |
