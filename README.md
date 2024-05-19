@@ -4,7 +4,7 @@
 
 ```sh
 # install poetry
-pip install poetry
+pipx install poetry
 
 # install dependencies
 poetry install
