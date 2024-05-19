@@ -1,4 +1,4 @@
-name: Python
+name: Poetry
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     branches: ["main"]
 
 jobs:
-  python:
+  poetry:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -16,22 +16,14 @@ jobs:
         python-version: ["3.11"]
     steps:
       - uses: actions/checkout@v4
+      - run: pipx install poetry
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-      - name: Lint
-        run: |
-          pip install ruff
-          ruff check .
-      - name: Install dependencies
-        run: |
-          pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
-          pip install .
-      - name: Test
-        run: |
-          pip install pytest pytest-cov
-          pytest -v -s --cov=. --cov-report=xml tests
+          cache: poetry
+      - run: poetry install
+      - run: poetry run ruff check .
+      - run: poetry run pytest -v -s --cov=. --cov-report=xml tests
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:
