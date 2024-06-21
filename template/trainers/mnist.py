@@ -1,5 +1,5 @@
 import torch
-import torch.nn.functional as F
+import torch.nn.functional as f
 import wandb
 from mlconfig import register
 from torch.nn import Module
@@ -72,7 +72,7 @@ class MNISTTrainer(Trainer):
             y = y.to(self.device)
 
             output = self.model(x)
-            loss = F.cross_entropy(output, y)
+            loss = f.cross_entropy(output, y)
 
             self.optimizer.zero_grad()
             loss.backward()
@@ -95,7 +95,7 @@ class MNISTTrainer(Trainer):
             y = y.to(self.device)
 
             output = self.model(x)
-            loss = F.cross_entropy(output, y)
+            loss = f.cross_entropy(output, y)
 
             loss_metric.update(loss, weight=x.size(0))
             acc_metric.update(output, y)

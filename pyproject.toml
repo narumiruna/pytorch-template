@@ -34,9 +34,6 @@ exclude = ["build"]
 line-length = 120
 
 [tool.ruff.lint]
-ignore = [
-    "N812", # lowercase-imported-as-non-lowercase
-]
 select = [
     "B",  # flake8-bugbear
     "C",  # flake8-comprehensions
