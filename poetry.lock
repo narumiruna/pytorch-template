@@ -490,12 +490,12 @@ tbb = "==2021.*"
 
 [[package]]
 name = "mlconfig"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "mlconfig-0.2.1-py3-none-any.whl", hash = "sha256:9f7a6344ada01e4129a807690cf7244d139b87724914e2cfb82da430ab104121"},
+    {file = "mlconfig-0.2.2-py3-none-any.whl", hash = "sha256:daebb5393b60893a9752d1ba10ac9edc4f821be6a6623cf61229a9a36db1d394"},
 ]
 
 [package.dependencies]
@@ -1593,4 +1593,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a3eb5d19ce3601e79ba1e5c7806a6d96c6e8c6c700b055f4676d477ff86b2e82"
+content-hash = "44504577c21a27c36753e32f1b8dd632e161dede246f3c3c1df0a8c0c625383c"
