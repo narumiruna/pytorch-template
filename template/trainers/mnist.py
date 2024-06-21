@@ -53,10 +53,10 @@ class MNISTTrainer(Trainer):
             }
             wandb.log(metrics, step=epoch)
 
-            format_string = "Epoch: {}/{}, ".format(epoch, self.num_epochs)
-            format_string += "train loss: {:.4f}, train acc: {:.4f}, ".format(train_loss, train_acc)
-            format_string += "test loss: {:.4f}, test acc: {:.4f}, ".format(test_loss, test_acc)
-            format_string += "best test acc: {:.4f}.".format(self.best_acc)
+            format_string = f"Epoch: {epoch}/{self.num_epochs}, "
+            format_string += f"train loss: {train_loss:.4f}, train acc: {train_acc:.4f}, "
+            format_string += f"test loss: {test_loss:.4f}, test acc: {test_acc:.4f}, "
+            format_string += f"best test acc: {self.best_acc:.4f}."
             tqdm.write(format_string)
 
             self.state["epoch"] = epoch

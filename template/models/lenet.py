@@ -4,7 +4,7 @@ from torch import nn
 
 class ConvBNReLU(nn.Sequential):
     def __init__(self, in_channels, out_channels, kernel_size):
-        super(ConvBNReLU, self).__init__(
+        super().__init__(
             nn.Conv2d(in_channels, out_channels, kernel_size, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
@@ -14,7 +14,7 @@ class ConvBNReLU(nn.Sequential):
 @register
 class LeNet(nn.Module):
     def __init__(self):
-        super(LeNet, self).__init__()
+        super().__init__()
         self.features = nn.Sequential(
             ConvBNReLU(1, 6, 5),
             nn.MaxPool2d(2, 2),
