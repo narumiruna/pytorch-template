@@ -19,12 +19,16 @@ jobs:
         poetry-version: ["1.8.3"]
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry/artifacts
+          key: ${{ runner.os }}-poetry-artifacts
       - name: Install poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: poetry
+          # cache: poetry
       - name: Install dependencies
         run: poetry install
       - name: Lint
