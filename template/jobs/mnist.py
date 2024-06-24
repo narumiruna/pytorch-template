@@ -1,7 +1,7 @@
 import torch
 from mlconfig import instantiate
 from mlconfig import register
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
 
 from ..utils import manual_seed
 from .job import Job
@@ -9,7 +9,7 @@ from .job import Job
 
 @register
 class MNISTTrainingJob(Job):
-    def run(self, config: OmegaConf, resume=None) -> None:
+    def run(self, config: DictConfig, resume: str | None = None) -> None:
         manual_seed()
 
         device = torch.device(config.device if torch.cuda.is_available() else "cpu")

@@ -6,8 +6,8 @@ from torch.nn import Module
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torch.utils.data import DataLoader
-from torchmetrics import Accuracy
 from torchmetrics import MeanMetric
+from torchmetrics.classification import MulticlassAccuracy
 from tqdm import tqdm
 from tqdm import trange
 
@@ -36,7 +36,7 @@ class MNISTTrainer(Trainer):
         self.num_epochs = num_epochs
         self.num_classes = num_classes
 
-        self.best_acc = 0
+        self.best_acc = 0.0
         self.state = {"epoch": 1}
 
     def fit(self) -> None:
@@ -61,11 +61,11 @@ class MNISTTrainer(Trainer):
 
             self.state["epoch"] = epoch
 
-    def train(self) -> None:
+    def train(self) -> tuple[float, float]:
         self.model.train()
 
-        loss_metric = MeanMetric().to(self.device)
-        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes).to(self.device)
+        loss_metric = MeanMetric()
+        acc_metric = MulticlassAccuracy(num_classes=self.num_classes)
 
         for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
@@ -78,17 +78,17 @@ class MNISTTrainer(Trainer):
             loss.backward()
             self.optimizer.step()
 
-            loss_metric.update(loss, weight=x.size(0))
-            acc_metric.update(output, y)
+            loss_metric.update(loss.item(), weight=x.size(0))
+            acc_metric.update(output.cpu(), y.cpu())
 
-        return loss_metric.compute().item(), acc_metric.compute().item()
+        return float(loss_metric.compute()), float(acc_metric.compute())
 
     @torch.no_grad()
-    def evaluate(self) -> None:
+    def evaluate(self) -> tuple[float, float]:
         self.model.eval()
 
-        loss_metric = MeanMetric().to(self.device)
-        acc_metric = Accuracy(task="multiclass", num_classes=self.num_classes).to(self.device)
+        loss_metric = MeanMetric()
+        acc_metric = MulticlassAccuracy(num_classes=self.num_classes)
 
         for x, y in tqdm(self.test_loader):
             x = x.to(self.device)
@@ -97,15 +97,15 @@ class MNISTTrainer(Trainer):
             output = self.model(x)
             loss = f.cross_entropy(output, y)
 
-            loss_metric.update(loss, weight=x.size(0))
-            acc_metric.update(output, y)
+            loss_metric.update(loss.item(), weight=x.size(0))
+            acc_metric.update(output.cpu(), y.cpu())
 
-        test_acc = acc_metric.compute().item()
+        test_acc = float(acc_metric.compute())
         if test_acc > self.best_acc:
             self.best_acc = test_acc
             self.save_checkpoint("best.pth")
 
-        return loss_metric.compute().item(), test_acc
+        return float(loss_metric.compute()), test_acc
 
     def save_checkpoint(self, f) -> None:
         self.model.eval()
