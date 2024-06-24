@@ -1704,10 +1704,10 @@ files = [
 dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 
 [extras]
-cpu = ["torch", "torchvision"]
-cuda = ["torch", "torchvision"]
+cpu = ["torch", "torch", "torchvision", "torchvision"]
+cuda = ["torch", "torch", "torchvision", "torchvision"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3659bad607c8b4729bb20d5632dabaf200d2c647de5d8db62d1af0a7c5383953"
+content-hash = "d6f62210f15d074a49bf256ae58038e0f6875a26336cf71ecd9975b9a483b9f8"
