@@ -26,7 +26,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: poetry
       - name: Install dependencies
-        run: poetry install
+        run: poetry install -E cpu --with cpu
       - name: Lint
         run: poetry run ruff check .
       - name: Type check

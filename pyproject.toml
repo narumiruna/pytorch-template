@@ -4,10 +4,22 @@ version = "0.1.0"
 description = ""
 authors = ["narumi <toucans-cutouts0f@icloud.com>"]
 
+[[tool.poetry.source]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
 [tool.poetry.dependencies]
 python = "^3.11"
-torch = "^2.3.1"
-torchvision = "^0.18.1"
+# torch = "^2.3.1"
+# torchvision = "^0.18.1"
+torch = { version = "^2.3.1+cu121", source = "pytorch-cu121", markers = "extra=='cuda' and extra!='cpu'" }
+torchvision = { version = "^0.18.1+cu121", source = "pytorch-cu121", markers = "extra=='cuda' and extra!='cpu'" }
 torchmetrics = "^1.4.0"
 numpy = "^1.26.3"
 tqdm = "^4.66.4"
@@ -21,6 +33,17 @@ pytest-cov = "^5.0.0"
 ruff = "^0.4.10"
 toml = "^0.10.2"
 mypy = "^1.10.0"
+
+[tool.poetry.group.cpu]
+optional = true
+
+[tool.poetry.group.cpu.dependencies]
+torch = { version = "^2.3.1+cpu", source = "pytorch-cpu", markers = "extra=='cpu' and extra!='cuda'" }
+torchvision = { version = "^0.18.1+cpu", source = "pytorch-cpu", markers = "extra=='cpu' and extra!='cuda'" }
+
+[tool.poetry.extras]
+cuda = ["torch", "torchvision"]
+cpu = ["torch", "torchvision"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
