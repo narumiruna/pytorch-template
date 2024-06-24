@@ -1,6 +1,6 @@
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
 
 
 class Job:
-    def run(self, config: OmegaConf, resume=None) -> None:
+    def run(self, config: DictConfig, resume: str | None = None) -> None:
         raise NotImplementedError
