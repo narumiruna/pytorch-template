@@ -13,7 +13,6 @@ jobs:
   python:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
       matrix:
         python-version: ["3.11"]
         poetry-version: ["1.8.3"]
