@@ -13,7 +13,7 @@ numpy = "^1.26.3"
 tqdm = "^4.66.4"
 loguru = "^0.7.2"
 mlconfig = "^0.2.2"
-wandb = "^0.17.4"
+wandb = "^0.17.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
