@@ -16,7 +16,7 @@ mlconfig = "^0.2.2"
 wandb = "^0.17.4"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
+pytest = "^8.3.1"
 pytest-cov = "^5.0.0"
 ruff = "^0.5.3"
 toml = "^0.10.2"
