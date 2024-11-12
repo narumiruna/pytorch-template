@@ -3,12 +3,12 @@
 ## Usage
 
 ```sh
-# install poetry
-pipx install poetry
+# install uv
+pip install uv
 
 # install dependencies
-poetry install
+uv sync
 
 # train model
-poetry run template -c configs/mnist.yaml
+uv run pytorch-template -c configs/mnist.yaml
 ```
