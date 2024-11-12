@@ -1,14 +1,14 @@
-install:
-	poetry install
-
 lint:
-	poetry run ruff check .
+	uv run ruff check .
 
 test:
-	poetry run pytest -v -s --cov=. tests
+	uv run pytest -v -s --cov=src tests
+
+type:
+	uv run mypy --install-types --non-interactive .
 
 publish:
-	poetry build -f wheel
-	poetry publish
+	uv build --wheel
+	uv publish
 
 .PHONY: lint test publish
