@@ -1,6 +1,7 @@
+from typing import Annotated
 from typing import Any
 
-import click
+import typer
 import wandb
 from mlconfig import instantiate
 from mlconfig import load
@@ -23,10 +24,10 @@ def flatten(data: dict[str, Any], prefix: str | None = None, sep: str = ".") -> 
     return d
 
 
-@click.command()
-@click.option("-c", "--config-file", type=click.STRING, default="configs/mnist.yaml")
-@click.option("-r", "--resume", type=click.STRING, default=None)
-def main(config_file, resume) -> None:
+def run(
+    config_file: Annotated[str, typer.Option("-c", "--config")] = "configs/mnist.yaml",
+    resume: Annotated[str | None, typer.Option("-r", "--resume")] = None,
+) -> None:
     wandb.login()
 
     with wandb.init(dir="./experiments"):
@@ -37,3 +38,7 @@ def main(config_file, resume) -> None:
 
         job = instantiate(config.job)
         job.run(config, resume)
+
+
+def main() -> None:
+    typer.run(run)
