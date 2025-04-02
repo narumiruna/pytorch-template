@@ -8,7 +8,7 @@ from mlconfig import load
 from omegaconf import OmegaConf
 
 
-def flatten(data: dict[str, Any], prefix: str | None = None, sep: str = ".") -> dict[str, Any]:
+def flatten(data: Any, prefix: str | None = None, sep: str = ".") -> dict[str, Any]:
     d = {}
 
     for key, value in data.items():
