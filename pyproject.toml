@@ -58,8 +58,6 @@ select = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
-# https://github.com/astral-sh/ruff/issues/10519
-known-third-party = ["wandb"]
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]

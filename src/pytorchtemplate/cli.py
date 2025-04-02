@@ -27,7 +27,7 @@ def flatten(data: dict, prefix=None, sep="."):
 def main(config_file, resume) -> None:
     wandb.login()
 
-    with wandb.init():
+    with wandb.init(dir="./experiments"):
         wandb.save(config_file)
 
         config = load(config_file)
