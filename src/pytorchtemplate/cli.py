@@ -1,3 +1,5 @@
+from typing import Any
+
 import click
 import wandb
 from mlconfig import instantiate
@@ -5,7 +7,7 @@ from mlconfig import load
 from omegaconf import OmegaConf
 
 
-def flatten(data: dict, prefix=None, sep="."):
+def flatten(data: dict[str, Any], prefix: str | None = None, sep: str = ".") -> dict[str, Any]:
     d = {}
 
     for key, value in data.items():
