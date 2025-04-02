@@ -10,5 +10,5 @@ pip install uv
 uv sync
 
 # train model
-uv run pytorch-template -c configs/mnist.yaml
+uv run pytorchtemplate -c configs/mnist.yaml
 ```
