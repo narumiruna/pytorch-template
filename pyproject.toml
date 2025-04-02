@@ -1,5 +1,5 @@
 [project]
-name = "pytorch-template"
+name = "pytorchtemplate"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pytorch-template = "pytorch_template.cli:main"
+pytorchtemplate = "pytorchtemplate.cli:main"
 
 [build-system]
 requires = ["hatchling"]

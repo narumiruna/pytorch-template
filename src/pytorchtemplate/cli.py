@@ -24,7 +24,7 @@ def flatten(data: dict, prefix=None, sep="."):
 @click.command()
 @click.option("-c", "--config-file", type=click.STRING, default="configs/mnist.yaml")
 @click.option("-r", "--resume", type=click.STRING, default=None)
-def main(config_file, resume):
+def main(config_file, resume) -> None:
     wandb.login()
 
     with wandb.init():

@@ -1,6 +1,6 @@
 import torch
 
-from pytorch_template.models import LeNet
+from pytorchtemplate.models import LeNet
 
 
 @torch.no_grad()
