@@ -17,6 +17,8 @@ jobs:
         with:
           images: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+          flavor: |
+            latest=auto
           tags: |
             type=schedule
             type=ref,event=branch
