@@ -364,13 +364,13 @@ wheels = [
 
 [[package]]
 name = "mlconfig"
-version = "0.2.3"
+version = "0.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "omegaconf" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/9a/64924fede77062b922511ea11f248f4d38d7694e954497eab0f8458c52dc/mlconfig-0.2.3-py3-none-any.whl", hash = "sha256:536eec92c00566891a527ce18304665b7e87da10853f2d4bf62439c18c3a03b1", size = 4128, upload-time = "2024-11-09T08:51:24.203Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/91/bbc1abea93d49bc153f4976cf381dcff1e24e077524292a3503be850d460/mlconfig-0.3.2-py3-none-any.whl", hash = "sha256:97449b2b371215b34f02e6077a2aba15997ab278bb05a68ca2d55ad86ab3a491", size = 4288, upload-time = "2025-08-12T05:06:05.041Z" },
 ]
 
 [[package]]
