@@ -1,11 +1,11 @@
 [project]
-name = "pytorchtemplate"
-version = "0.0.0"
-description = ""
-readme = "README.md"
+name            = "pytorchtemplate"
+version         = "0.0.0"
+description     = ""
+readme          = "README.md"
 requires-python = ">=3.12"
-authors = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
-dependencies = [
+authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
+dependencies    = [
   "loguru>=0.7.3",
   "mlconfig>=0.3.2",
   "numpy>=2.4.1",
@@ -35,13 +35,13 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires      = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.bumpversion]
-current_version = "0.1.1"
-tag = true
-commit = true
+current_version  = "0.1.1"
+tag              = true
+commit           = true
 pre_commit_hooks = ["uv lock --upgrade", "git add uv.lock"]
 
 [tool.mypy]
@@ -51,20 +51,20 @@ ignore_missing_imports = true
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
-exclude = ["build"]
+exclude     = ["build"]
 line-length = 120
 
 [tool.ruff.lint]
 select = [
-  "B",  # flake8-bugbear
-  "C",  # flake8-comprehensions
-  "E",  # pycodestyle errors
-  "F",  # pyflakes
-  "I",  # isort
-  "N",  # pep8-naming
-  "SIM",  # flake8-simplify
-  "UP",  # pyupgrade
-  "W",  # pycodestyle warnings
+  "B",      # flake8-bugbear
+  "C",      # flake8-comprehensions
+  "E",      # pycodestyle errors
+  "F",      # pyflakes
+  "I",      # isort
+  "N",      # pep8-naming
+  "SIM",    # flake8-simplify
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -72,3 +72,7 @@ select = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.tombi.format.rules]
+key-value-equals-sign-alignment = true
+trailing-comment-alignment      = true
