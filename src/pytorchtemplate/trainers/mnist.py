@@ -6,11 +6,11 @@ from torch.nn import Module
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torch.utils.data import DataLoader
-from torchmetrics import MeanMetric
-from torchmetrics.classification import MulticlassAccuracy
 from tqdm import tqdm
 from tqdm import trange
 
+from ..metric import Accuracy
+from ..metric import MeanMetric
 from .trainer import Trainer
 
 
@@ -65,7 +65,7 @@ class MNISTTrainer(Trainer):
         self.model.train()
 
         loss_metric = MeanMetric()
-        acc_metric = MulticlassAccuracy(num_classes=self.num_classes)
+        acc_metric = Accuracy()
 
         for x, y in tqdm(self.train_loader):
             x = x.to(self.device)
@@ -88,7 +88,7 @@ class MNISTTrainer(Trainer):
         self.model.eval()
 
         loss_metric = MeanMetric()
-        acc_metric = MulticlassAccuracy(num_classes=self.num_classes)
+        acc_metric = Accuracy()
 
         for x, y in tqdm(self.test_loader):
             x = x.to(self.device)
