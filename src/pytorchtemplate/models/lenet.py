@@ -1,3 +1,4 @@
+import torch
 from mlconfig import register
 from torch import nn
 
@@ -13,7 +14,7 @@ class ConvBNReLU(nn.Sequential):
 
 @register
 class LeNet(nn.Module):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.features = nn.Sequential(
             ConvBNReLU(1, 6, 5),
@@ -30,7 +31,7 @@ class LeNet(nn.Module):
             nn.Linear(84, 10),
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.features(x)
         x = x.view(x.size(0), -1)
         x = self.classifier(x)

@@ -6,7 +6,7 @@ from torchvision import transforms
 
 @register
 class MNISTDataLoader(data.DataLoader):
-    def __init__(self, root: str, train: bool, batch_size: int, **kwargs):
+    def __init__(self, root: str, train: bool, batch_size: int, **kwargs) -> None:
         transform = transforms.Compose(
             [
                 transforms.Resize(32),

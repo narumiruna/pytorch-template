@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 import torch.nn.functional as f
 import wandb
@@ -121,7 +123,7 @@ class MNISTTrainer(Trainer):
         torch.save(checkpoint, f)
         wandb.save(f)
 
-    def resume(self, f) -> None:
+    def resume(self, f: str | Path) -> None:
         checkpoint = torch.load(f, map_location=self.device)
 
         self.model.load_state_dict(checkpoint["model"])
