@@ -1,8 +1,5 @@
 device: cuda
 
-job:
-  name: MNISTTrainingJob
-
 trainer:
   name: MNISTTrainer
   num_epochs: 20

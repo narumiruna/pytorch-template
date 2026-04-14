@@ -3,17 +3,16 @@ name            = "pytorchtemplate"
 version         = "0.0.0"
 description     = ""
 readme          = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 authors         = [{ name = "narumi", email = "toucans-cutouts0f@icloud.com" }]
 dependencies    = [
   "loguru>=0.7.3",
   "mlconfig>=0.3.2",
-  "numpy>=2.4.1",
-  "torch>=2.10.0",
-  "torchvision>=0.25.0",
-  "tqdm>=4.67.1",
-  "typer>=0.21.1",
-  "wandb>=0.24.0",
+  "torch>=2.11.0",
+  "torchvision>=0.26.0",
+  "tqdm>=4.67.3",
+  "typer>=0.24.1",
+  "wandb>=0.26.0",
 ]
 
 [project.scripts]
@@ -21,11 +20,10 @@ pytorchtemplate = "pytorchtemplate.cli:main"
 
 [dependency-groups]
 dev = [
-  "pip>=25.3",
   "pytest>=9.0.3",
-  "pytest-cov>=7.0.0",
-  "ruff>=0.14.14",
-  "ty>=0.0.13",
+  "pytest-cov>=7.1.0",
+  "ruff>=0.15.10",
+  "ty>=0.0.29",
 ]
 
 [build-system]
@@ -38,14 +36,10 @@ tag              = true
 commit           = true
 pre_commit_hooks = ["uv lock --upgrade", "git add uv.lock"]
 
-[tool.mypy]
-ignore_missing_imports = true
-
 [tool.pytest]
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
-exclude     = ["build"]
 line-length = 120
 
 [tool.ruff.lint]
@@ -66,6 +60,9 @@ select = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.tombi.files]
+exclude = ["uv.lock"]
 
 [tool.tombi.format.rules]
 key-value-equals-sign-alignment = true

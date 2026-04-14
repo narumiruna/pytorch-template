@@ -9,9 +9,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from tqdm import trange
 
-from ..metric import Accuracy
-from ..metric import MeanMetric
-from .trainer import Trainer
+from pytorchtemplate.metric import Accuracy
+from pytorchtemplate.metric import MeanMetric
+from pytorchtemplate.trainers.trainer import Trainer
 
 
 @register
