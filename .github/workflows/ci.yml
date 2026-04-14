@@ -1,4 +1,4 @@
-name: Python
+name: CI
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  python:
+  ci:
     runs-on: ubuntu-latest
     strategy:
       matrix:
