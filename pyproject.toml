@@ -22,7 +22,7 @@ pytorchtemplate = "pytorchtemplate.cli:main"
 [dependency-groups]
 dev = [
   "pip>=25.3",
-  "pytest>=9.0.2",
+  "pytest>=9.0.3",
   "pytest-cov>=7.0.0",
   "ruff>=0.14.14",
   "ty>=0.0.13",
